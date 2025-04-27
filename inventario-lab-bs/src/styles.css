@@ -1,0 +1,5 @@
+@import './tailwind.css';
+@import './assets/layout/layout.scss';
+@import './assets/demo/demo.scss';
+@import '../node_modules/primeicons/primeicons.css';
+

@@ -1,0 +1,114 @@
+<div class="card">
+    <div class="md:w-full">
+        <div class="card flex flex-col gap-4">
+            <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
+                Crear Insumo
+            </h1>
+            <div class="grid grid-cols-11 gap-2">
+                <label for="cod_insumo" class="col-span-1 flex items-center justify-end mb-0">Código</label>
+                <div class="col-span-2 mr-2 flex items-center">
+                    <input pInputText id="cod_insumo" [(ngModel)]="cod_insumo" type="text" class="w-full"/>
+                </div>
+
+                <label for="nombre" class="col-span-1 flex items-center justify-end mb-0">Nombre</label>
+                <div class="col-span-2 mr-2 flex items-center">
+                    <input pInputText id="nombre" [(ngModel)]="nombre" type="text" class="w-full"/>
+                </div>
+
+                <label for="cant_min" class="col-span-1 flex items-center justify-end mb-0">Cantidad Min.</label>
+                <div class="col-span-1 mr-2 flex items-center">
+                    <input pInputText id="cant_min" [(ngModel)]="cant_min" type="number" class="w-full"/>
+                </div>
+
+                <label for="cant_max" class="col-span-1 flex items-center justify-end mb-0">Cantidad Max.</label>
+                <div class="col-span-1 mr-2 flex items-center">
+                    <input pInputText id="cant_max" [(ngModel)]="cant_max" type="number" class="w-full"/>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-2 mt-5 flex items-center">
+                <label class="col-start-2 font-bold flex items-center justify-center mb-0">Presentación</label>
+                <p-button icon="pi pi-plus" severity="info" rounded (click)="agregarPresentacion()" class="col-span-2" />
+            </div>
+
+            <div *ngFor="let presentacion of presentaciones; let i = index" class="grid grid-cols-12 gap-2 mb-2">
+                <div class="col-span-3 md:col-span-3 mr-2 flex items-center justify-end">
+                    <input pInputText [(ngModel)]="presentacion.codigo" type="text" placeholder="Código Presentación"/>
+                </div>
+                <div class="col-span-2 md:col-span-2 mr-2 flex items-center justify-center">
+                    <input pInputText [(ngModel)]="presentacion.descripcion" type="text" placeholder="Descripción"/>
+                </div>
+                <div class="flex items-center">
+                    <p-button icon="pi pi-trash" severity="danger" rounded (click)="eliminarPresentacion(i)" />
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-2">
+                <div class="col-span-11 md:col-span-11 flex justify-end">
+                    <p-button label="Guardar Insumo" severity="info" (click)="guardarInsumo()" rounded />
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-table [value]="insumos" [expandedRowKeys]="expandedRows" dataKey="cod_insumo">
+        <ng-template #caption>
+            <div class="flex flex-wrap justify-end gap-2">
+                <p-button label="Expand All" icon="pi pi-plus" text (onClick)="expandAll()" />
+                <p-button label="Collapse All" icon="pi pi-minus" text (onClick)="collapseAll()" />
+            </div>
+        </ng-template>
+        <ng-template #header>
+          <tr>
+            <th style="width: 5rem"></th>
+            <th pSortableColumn="cod_insumo">Código <p-sortIcon field="cod_insumo" /></th>
+            <th pSortableColumn="nombre">Insumo <p-sortIcon field="nombre" /></th>
+            <th pSortableColumn="cant_min">Cant. Mínima <p-sortIcon field="cant_min" /></th>
+            <th pSortableColumn="cant_max">Cant. Máxima <p-sortIcon field="cant_max" /></th>
+            <th pSortableColumn="fecha_creacion">Fecha de creación <p-sortIcon field="fecha_creacion" /></th>
+          </tr>
+        </ng-template>
+      
+        <ng-template #body let-insumo let-expanded="expanded">
+          <tr>
+            <td>
+                <p-button type="button" pRipple [pRowToggler]="insumo" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+            </td>
+            <td>{{ insumo.cod_insumo }}</td>
+            <td>{{ insumo.nombre }}</td>
+            <td>{{ insumo.cant_min }}</td>
+            <td>{{ insumo.cant_max }}</td>
+            <td>{{ insumo.fecha_creacion }}</td>
+          </tr>
+        </ng-template>
+      
+        <ng-template #expandedrow let-insumo>
+            <tr>
+              <td colspan="5">
+                <div class="p-4">
+                  <h5>Presentaciones de {{ insumo.nombre }}</h5>
+                  <p-table [value]="insumo.presentaciones" dataKey="cod_presentacion">
+                    <ng-template #header>
+                      <tr>
+                        <th pSortableColumn="cod_presentacion">Código <p-sortIcon field="cod_presentacion" /></th>
+                        <th pSortableColumn="descripcion">Descripción <p-sortIcon field="descripcion" /></th>
+                        <th pSortableColumn="fecha_creacion">Fecha de creación <p-sortIcon field="fecha_creacion" /></th>
+                      </tr>
+                    </ng-template>
+                    <ng-template #body let-presentacion>
+                      <tr>
+                        <td>{{ presentacion.cod_presentacion }}</td>
+                        <td>{{ presentacion.nombre }}</td>
+                        <td>{{ presentacion.fecha_creacion }}</td>
+                      </tr>
+                    </ng-template>
+                    <ng-template #emptymessage>
+                      <tr>
+                        <td colspan="3">No hay presentaciones disponibles para este insumo.</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+      </p-table>
+</div>

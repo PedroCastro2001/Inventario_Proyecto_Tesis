@@ -1,0 +1,11 @@
+.p-datatable-frozen-tbody {
+    font-weight: bold;
+}
+
+.p-datatable-scrollable .p-frozen-column {
+    font-weight: bold;
+}
+
+.hidden-init-btn {
+    display: none !important;
+  }
