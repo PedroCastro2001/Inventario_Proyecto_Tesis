@@ -63,18 +63,18 @@ export const login = async (req, res) => {
             idSesion = result.insertId;
         }
 
-        req.session.user = {
+        /*req.session.user = {
             id: user.id_usuario,
             username: user.nombre_usuario,
             full_name: user.rol === "Administrador" ? user.nombre_completo : null, 
             rol: user.rol,
             id_sesion: idSesion
-        };
+        };*/
         
 
         res.json({
             message: 'Login exitoso',
-            usuario: req.session.user
+            //usuario: req.session.user
         });
 
     } catch (err) {
@@ -84,22 +84,24 @@ export const login = async (req, res) => {
 }
 
 export const profile = (req, res) => {
-    if (req.session.user) {
+    /*if (req.session.user) {
         return res.status(200).json(req.session.user);
     } else {
         return res.status(401).json({ error: "No autenticado" });
-    }
+    }*/
+        return res.status(401).json({ error: "No autenticado" });
+
 };
 
 export const logout = (req, res) => {
-    req.session.destroy(err => {
+    /*req.session.destroy(err => {
         if (err) {
             return res.status(500).json({ error: "Error al cerrar sesión" });
         }
 
         res.clearCookie('connect.sid');  
         return res.status(200).json({ message: "Sesión cerrada correctamente" });
-    });
+    });*/
 };
 
 export const registrarNombreInvitado = async (req, res) => {
@@ -107,9 +109,9 @@ export const registrarNombreInvitado = async (req, res) => {
 
     console.log('Datos recibidos:', req.body); 
 
-    if (!req.session.user || req.session.user.rol !== 'Invitado') {
+    /*if (!req.session.user || req.session.user.rol !== 'Invitado') {
         return res.status(403).json({ error: 'Acceso denegado' });
-    }
+    }*/
 
     try {
         if (!nombre_real || !id_sesion) {
@@ -121,8 +123,8 @@ export const registrarNombreInvitado = async (req, res) => {
             [nombre_real, id_sesion]
         );
 
-        req.session.user.full_name = nombre_real;
-        console.log(req.session); 
+        //req.session.user.full_name = nombre_real;
+        //console.log(req.session); 
 
         res.status(200).json({ 
             message: 'Nombre real actualizado', 
