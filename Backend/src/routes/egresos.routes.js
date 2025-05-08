@@ -13,11 +13,11 @@ import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
 
-router.get("/egresos", requireLogin, getEgresos);
-router.get("/egresos/:cod_egreso", requireLogin ,getEgreso);
-router.delete("/egresos/:cod_egreso", requireLogin, deleteEgreso);
-router.post("/egresos", requireLogin, createEgreso);
-router.post('/egresos/lote',requireLogin, createEgresosConTransaccion);
-router.get('/lotes/:cod_insumo/:cod_presentacion', requireLogin, getLotesPorInsumoYPresentacion);
+router.get("/egresos", getEgresos);
+router.get("/egresos/:cod_egreso"  ,getEgreso);
+router.delete("/egresos/:cod_egreso",  deleteEgreso);
+router.post("/egresos",  createEgreso);
+router.post('/egresos/lote', createEgresosConTransaccion);
+router.get('/lotes/:cod_insumo/:cod_presentacion',  getLotesPorInsumoYPresentacion);
 
 export default router;

@@ -10,10 +10,10 @@ import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
 
-router.get("/insumos", requireLogin, getInsumos);
-router.get("/insumos/:cod_insumo",requireLogin, getInsumo);
-router.delete("/insumos/:cod_insumo", requireLogin, deleteInsumo);
-router.post("/insumos", requireLogin, createInsumo);
-router.patch("/insumos/:cod_insumo", requireLogin, updateInsumo);
+router.get("/insumos", getInsumos);
+router.get("/insumos/:cod_insumo", getInsumo);
+router.delete("/insumos/:cod_insumo",  deleteInsumo);
+router.post("/insumos", createInsumo);
+router.patch("/insumos/:cod_insumo",  updateInsumo);
 
 export default router;

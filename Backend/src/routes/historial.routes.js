@@ -7,6 +7,6 @@ import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
 
-router.get("/historial", requireLogin, getHistorialMovimientos);
+router.get("/historial", getHistorialMovimientos);
 
 export default router;

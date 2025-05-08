@@ -4,7 +4,7 @@ import { requireLogin } from '../middlewares/requireLogin.js';
 
 const router = Router();
 
-router.post("/stock", requireLogin, getResumenStock);
-router.get("/existencias-consumos", requireLogin, getExistenciasYConsumos);
+router.post("/stock", getResumenStock);
+router.get("/existencias-consumos", getExistenciasYConsumos);
 
 export default router;

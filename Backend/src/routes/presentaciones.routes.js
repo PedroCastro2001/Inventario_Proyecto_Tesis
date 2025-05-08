@@ -11,11 +11,11 @@ import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
 
-router.get("/presentaciones", requireLogin, getPresentaciones);
-router.get("/presentaciones/:cod_presentacion", requireLogin, getPresentacion);
-router.get("/presentaciones/insumo/:cod_insumo", requireLogin, getPresentacionesInsumo);
-router.delete("/presentaciones/:cod_presentacion", requireLogin, deletePresentacion);
-router.post("/presentaciones", requireLogin, createPresentacion);
-router.patch("/presentaciones/:cod_presentacion", requireLogin, updatePresentacion);
+router.get("/presentaciones", getPresentaciones);
+router.get("/presentaciones/:cod_presentacion", getPresentacion);
+router.get("/presentaciones/insumo/:cod_insumo", getPresentacionesInsumo);
+router.delete("/presentaciones/:cod_presentacion", deletePresentacion);
+router.post("/presentaciones", createPresentacion);
+router.patch("/presentaciones/:cod_presentacion", updatePresentacion);
 
 export default router;
