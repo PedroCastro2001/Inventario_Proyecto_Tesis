@@ -122,6 +122,7 @@ export const registrarNombreInvitado = async (req, res) => {
         );
 
         req.session.user.full_name = nombre_real;
+        console.log(req.session); 
 
         res.status(200).json({ 
             message: 'Nombre real actualizado', 
