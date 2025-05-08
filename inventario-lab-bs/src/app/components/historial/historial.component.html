@@ -1,0 +1,107 @@
+<div class="card">  
+    <div class="md:w-full">
+        <div class="card flex flex-col gap-4">
+            <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
+                Historial de Movimientos
+            </h1>
+            <div class="grid grid-cols-12 gap-4 items-end mb-4">
+                <!-- Fecha Inicio -->
+                <div class="col-span-12 md:col-span-3">
+                    <label for="fechaInicio" class="block mb-1">Fecha Inicio</label>
+                    <p-datepicker 
+                        id="fechaInicio"
+                        [(ngModel)]="fechaInicio"
+                        [iconDisplay]="'input'" 
+                        [showIcon]="true" 
+                        dateFormat="yy-mm-dd"
+                        appendTo="body" />
+                </div>
+            
+                <!-- Fecha Fin -->
+                <div class="col-span-12 md:col-span-3">
+                    <label for="fechaFin" class="block mb-1">Fecha Fin</label>
+                    <p-datepicker 
+                        id="fechaFin"
+                        [(ngModel)]="fechaFin"
+                        [iconDisplay]="'input'" 
+                        [showIcon]="true" 
+                        dateFormat="yy-mm-dd"
+                        appendTo="body" />
+                </div>
+            
+                <!-- Tipo de Transacción -->
+                <div class="col-span-12 md:col-span-3">
+                    <label for="tipo" class="block mb-1">Tipo de Transacción</label>
+                    <p-dropdown 
+                        inputId="tipo"
+                        [options]="tipos" 
+                        [(ngModel)]="tipoSeleccionado" 
+                        placeholder="Seleccione tipo de movimiento" />
+                </div>
+            
+                <!-- Botón Buscar -->
+                <div class="col-span-12 md:col-span-3 flex justify-end">
+                    <p-button 
+                        label="Buscar" 
+                        icon="pi pi-search"
+                        (click)="buscar()"
+                        severity="info"
+                        rounded />
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-table
+      #dt
+      [value]="historial"
+      dataKey="id"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [globalFilterFields]="['accion', 'usuario', 'fecha']"
+      [tableStyle]="{ 'min-width': '75rem' }"
+    >  
+      <ng-template pTemplate="header">
+        <tr>
+          <th></th>
+          <th>Fecha</th>
+          <th>Tipo</th>
+          <th>Cod. Insumo</th>
+          <th>Insumo</th>
+          <th>Presentación</th>
+          <th>Cod. Lote</th>
+          <th>Cantidad</th>
+          <th *ngIf="mostrarEgresos">Traslado a</th>
+          <th *ngIf="mostrarIngresos">No. Requisición</th>
+          <th *ngIf="mostrarIngresos">Demanda Insatisfecha</th>
+          <th>Observaciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+        <tr>
+          <td>{{ rowIndex+1 }}</td>
+          <td>{{ item.fecha | date: 'dd/MM/yy' }}</td>
+          <td>
+            <p-tag 
+              [value]="item.tipo_transaccion" 
+              [severity]="item.tipo_transaccion === 'Ingreso' ? 'success' : 'warn'">
+            </p-tag>
+          </td>
+          <td>{{ item.cod_insumo }}</td>
+          <td>{{ item.insumo }}</td>
+          <td>{{ item.presentacion }}</td>
+          <td>{{ item.cod_lote }}</td>
+          <td>{{ item.cantidad }}</td>
+          <td *ngIf="mostrarEgresos">{{ item.area || '-' }}</td>
+          <td *ngIf="mostrarIngresos">{{ item.no_requisicion || '-' }}</td>
+          <td *ngIf="mostrarIngresos">{{ item.demanda_insatisfecha || '-' }}</td>
+          <td>{{ item.observaciones || '-' }}</td>
+        </tr>
+      </ng-template>
+        <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3">No se encontraron movimientos.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>

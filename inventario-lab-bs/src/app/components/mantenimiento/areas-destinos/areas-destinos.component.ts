@@ -30,7 +30,7 @@ interface expandedRows {
 }
 interface Area {
   name: string;
-  original?: Area; // Propiedad original opcional
+  original?: Area; 
 }
 
 @Component({

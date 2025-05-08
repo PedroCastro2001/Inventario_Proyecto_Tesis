@@ -10,24 +10,6 @@
                     <input pInputText id="no_requisicion" type="text"  [(ngModel)]="no_requisicion"/>
                 </div>
             </div>
-            <div class="grid grid-cols-12 gap-2">
-                <label for="fecha" class="flex items-center col-span-12 md:col-span-3">Fecha</label>
-                <div class="col-span-12 md:col-span-8">
-                    <p-datepicker  
-                    [iconDisplay]="'input'" 
-                    [showIcon]="true" 
-                    dateFormat="dd/mm/yy"
-                    inputId="icondisplay" 
-                    appendTo="body"
-                    />
-                </div>
-            </div>
-            <div class="grid grid-cols-12 gap-2 items-center">
-                <label for="email3" class="flex items-center col-span-12 md:col-span-3">Bodega</label>
-                <div class="col-span-12 md:col-span-6">
-                    <p-select [(ngModel)]="dropdownValue" [options]="dropdownValues" optionLabel="name" placeholder="Select" />
-                </div>
-            </div>
             <div class="col-span-12 md:col-span-3 flex justify-end">
                 <p-button 
                 label="Guardar Registro" 

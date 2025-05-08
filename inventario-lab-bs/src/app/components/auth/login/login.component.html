@@ -1,0 +1,36 @@
+<p-toast></p-toast>
+<div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
+    <div class="flex flex-col items-center justify-center">
+        <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+            <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+                <div class="text-center mb-8">
+                    <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Bienvenido(a)</div>
+                    <span class="text-muted-color font-medium">Ingresa tu usuario y contraseña para continuar</span>
+                </div>
+
+                <div>
+                    <label for="user" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Usuario</label>
+                    <input pInputText id="user" type="text" placeholder="Ingresa tu usuario" class="w-full md:w-[30rem] mb-8" [(ngModel)]="user" />
+
+                    <label for="password" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Contraseña</label>
+                    <p-password id="password" [(ngModel)]="password" placeholder="Ingresa tu contraseña" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+
+                    <p-button label="Ingresar" styleClass="w-full" (onClick)="login()"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p-dialog header="Nombre de Usuario Invitado" [(visible)]="mostrarModalInvitado" [modal]="true" [closable]="false" [responsive]="true" [style]="{width: '25rem'}">
+    <span class="p-text-secondary block mb-8">Ingresa tu nombre.</span>
+
+    <div class="flex items-center gap-4 mb-4">
+        <label for="nombreRealInvitado" class="font-semibold w-24">Nombre</label>
+        <input id="nombreRealInvitado" type="text" pInputText [(ngModel)]="nombreRealInvitado" placeholder="Ingresa tu nombre real" class="flex-auto" autocomplete="off" />
+    </div>
+
+    <div class="flex justify-end gap-2">
+        <p-button label="Cancelar" severity="secondary" (click)="mostrarModalInvitado = false" />
+        <p-button label="Confirmar" (click)="confirmarNombreInvitado()" />
+    </div>
+</p-dialog>

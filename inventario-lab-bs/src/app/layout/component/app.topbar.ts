@@ -1,14 +1,18 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
+import { AuthService } from '../../services/auth.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
+    providers: [MessageService],
     imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
     template: ` <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
@@ -57,8 +61,8 @@ import { LayoutService } from '../service/layout.service';
                         <i class="pi pi-inbox"></i>
                         <span>Messages</span>
                     </button>
-                    <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-user"></i>
+                    <button type="button" class="layout-topbar-action" (click)="logout()">
+                        <i class="pi pi-sign-out"></i>
                         <span>Profile</span>
                     </button>
                 </div>
@@ -69,9 +73,31 @@ import { LayoutService } from '../service/layout.service';
 export class AppTopbar {
     items!: MenuItem[];
 
-    constructor(public layoutService: LayoutService) {}
+    constructor(public layoutService: LayoutService, private authService: AuthService, private router: Router, private messageService: MessageService) {}
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
     }
+
+    logout() {
+        this.authService.logout().subscribe({
+          next: (res) => {
+            console.log('Sesión cerrada correctamente');
+            localStorage.removeItem('usuario');  
+            localStorage.removeItem('id_sesion');
+            localStorage.removeItem('mostrarBienvenida');
+            this.router.navigate(['/login']);  
+          },
+          error: (err) => {
+            console.error('Error al cerrar sesión', err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error al cerrar sesión',
+              detail: 'No se pudo cerrar sesión correctamente'
+            });
+          }
+        });
+    }
+
+
 }

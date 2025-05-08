@@ -6,18 +6,31 @@ import { PresentacionesComponent } from './components/mantenimiento/presentacion
 import { InsumosComponent } from './components/mantenimiento/insumos/insumos.component';
 import { AreasDestinosComponent } from './components/mantenimiento/areas-destinos/areas-destinos.component';
 import { EgresosComponent } from './components/transacciones/egresos/egresos.component';
+import { KardexPrincipalComponent } from './components/reportes/stock/stock.component';
+import { ExistenciasConsumosComponent } from './components/reportes/existencias-consumos/existencias-consumos.component';
+import { HistorialComponent } from './components/historial/historial.component';
+import { LoginComponent } from './components/auth/login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 export const routes: Routes = [
+    {
+        path: 'login',
+        component: LoginComponent, 
+      },
     {
         path: '',
         component:AppLayout,
         children:[
-            { path: '', component:MypageComponent},
-            { path: 'ingresos', component: IngresosComponent},
-            { path: 'egresos', component: EgresosComponent},
-            { path: 'presentaciones', component: PresentacionesComponent},
-            { path: 'insumos', component: InsumosComponent},
-            { path: 'ubicaciones', component: AreasDestinosComponent}
+            { path: '', component: DashboardComponent },
+            { path: 'ingresos', component: IngresosComponent },
+            { path: 'egresos', component: EgresosComponent },
+            { path: 'historial', component: HistorialComponent },
+            { path: 'presentaciones', component: PresentacionesComponent },
+            { path: 'insumos', component: InsumosComponent },
+            { path: 'ubicaciones', component: AreasDestinosComponent },
+            { path: 'reportes/stockPrincipal', component: KardexPrincipalComponent },
+            { path: 'reportes/existenciasConsumos', component: ExistenciasConsumosComponent },
         ]
-    }
+    },
+    { path: '**', redirectTo: 'login'}
 ];

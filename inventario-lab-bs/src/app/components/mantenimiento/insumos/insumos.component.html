@@ -76,7 +76,7 @@
             <td>{{ insumo.nombre }}</td>
             <td>{{ insumo.cant_min }}</td>
             <td>{{ insumo.cant_max }}</td>
-            <td>{{ insumo.fecha_creacion }}</td>
+            <td>{{ insumo.fecha_creacion | date: 'dd/MM/yyyy' }}</td>
           </tr>
         </ng-template>
       
@@ -97,7 +97,7 @@
                       <tr>
                         <td>{{ presentacion.cod_presentacion }}</td>
                         <td>{{ presentacion.nombre }}</td>
-                        <td>{{ presentacion.fecha_creacion }}</td>
+                        <td>{{ presentacion.fecha_creacion | date: 'dd/MM/yyyy'}}</td>
                       </tr>
                     </ng-template>
                     <ng-template #emptymessage>

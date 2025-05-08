@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KardexPrincipalComponent } from './kardex-principal.component';
+import { LoginComponent } from './login.component';
 
-describe('KardexPrincipalComponent', () => {
-  let component: KardexPrincipalComponent;
-  let fixture: ComponentFixture<KardexPrincipalComponent>;
+describe('LoginComponent', () => {
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [KardexPrincipalComponent]
+      imports: [LoginComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(KardexPrincipalComponent);
+    fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

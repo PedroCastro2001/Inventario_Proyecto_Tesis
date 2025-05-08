@@ -60,7 +60,7 @@ export class AppMenu {
                             {
                                 label: 'Historial de movimientos',
                                 icon: 'pi pi-history',
-                                routerLink: ['/auth/access']
+                                routerLink: ['/historial']
                             },
                         ]
                     },
@@ -69,19 +69,14 @@ export class AppMenu {
                         icon: 'pi pi-book',
                         items: [
                             {
-                                label: 'Kardex - Bodega principal',
+                                label: 'Stock de Insumos',
                                 icon: 'pi pi-file-excel',
-                                routerLink: ['/auth/login']
-                            },
-                            {
-                                label: 'Kardex - Áreas específicas',
-                                icon: 'pi pi-table',
-                                routerLink: ['/auth/error']
+                                routerLink: ['/reportes/stockPrincipal']
                             },
                             {
                                 label: 'Existencias y Consumos',
                                 icon: 'pi pi-chart-line',
-                                routerLink: ['/auth/access']
+                                routerLink: ['/reportes/existenciasConsumos']
                             },
                         ]
                     }
