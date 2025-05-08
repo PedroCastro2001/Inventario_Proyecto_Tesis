@@ -12,26 +12,26 @@ export class PresentacionService {
   constructor(private http: HttpClient) {}
 
   getPresentaciones(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}`, { withCredentials: true });
+    return this.http.get<any[]>(`${this.baseUrl}`);
   }
 
   getPresentacion(cod_presentacion: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${cod_presentacion}`, { withCredentials: true });
+    return this.http.get<any>(`${this.baseUrl}/${cod_presentacion}`);
   }
 
   getPresentacionesInsumo(cod_insumo: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/insumo/${cod_insumo}`, { withCredentials: true });
+    return this.http.get<any>(`${this.baseUrl}/insumo/${cod_insumo}`);
   }
 
   createPresentacion(data: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}`, data, { withCredentials: true });
+    return this.http.post<any>(`${this.baseUrl}`, data);
   }
 
   updatePresentacion(cod_presentacion: string, data: any): Observable<any> {
-    return this.http.patch<any>(`${this.baseUrl}/${cod_presentacion}`, data, { withCredentials: true });
+    return this.http.patch<any>(`${this.baseUrl}/${cod_presentacion}`, data);
   }
 
   deletePresentacion(cod_presentacion: string): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${cod_presentacion}`, { withCredentials: true });
+    return this.http.delete<any>(`${this.baseUrl}/${cod_presentacion}`);
   }
 }

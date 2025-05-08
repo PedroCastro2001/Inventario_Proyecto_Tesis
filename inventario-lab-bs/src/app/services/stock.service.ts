@@ -13,7 +13,7 @@ export class KardexService {
   constructor(private http: HttpClient) { }
 
   getResumenStock(body: { hastaFecha: string }) {
-    return this.http.post<any[]>(`${this.baseUrl}`, body, { withCredentials: true });
+    return this.http.post<any[]>(`${this.baseUrl}`, body);
   }
   
 }

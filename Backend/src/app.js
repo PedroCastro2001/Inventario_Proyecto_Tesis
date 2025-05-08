@@ -20,9 +20,9 @@ app.use(express.json());
 app.use(cors({
   origin: "https://gestion-insumos-lab-bs.web.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
+  //credentials: true,
 }));
-app.use(session({
+/*app.use(session({
   secret: 'my_secret',  
   resave: false,         
   saveUninitialized: true, 
@@ -32,7 +32,7 @@ app.use(session({
     sameSite: 'none',
     maxAge: 24 * 60 * 60 * 1000,
   }
-}));
+}));*/
 
 // Routes
 app.use("/", indexRoutes);

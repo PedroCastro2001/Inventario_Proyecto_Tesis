@@ -13,16 +13,16 @@ export class EgresosService {
   constructor(private http: HttpClient) { }
 
   createEgreso(egreso: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, egreso, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}`, egreso);
   }
 
   createMultipleEgresos(egresos: any[]): Observable<any> {
     return this.http.post(`${this.baseUrl}/lote`, {
       egresos
-    }, { withCredentials: true });
+    });
   }
 
   getLotesPorInsumoYPres(cod_insumo: number, cod_presentacion: number): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/lotes/${cod_insumo}/${cod_presentacion}`, { withCredentials: true });
+    return this.http.get<any[]>(`${environment.apiUrl}/lotes/${cod_insumo}/${cod_presentacion}`);
   }
 }

@@ -13,22 +13,22 @@ export class DestinoService {
   constructor(private http: HttpClient) {}
 
   getDestinos(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}`, { withCredentials: true });
+    return this.http.get<any[]>(`${this.baseUrl}`);
   }
 
   getDestino(cod_destino: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${cod_destino}`, { withCredentials: true });
+    return this.http.get<any>(`${this.baseUrl}/${cod_destino}`);
   }
 
   createDestino(data: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}`, data, { withCredentials: true });
+    return this.http.post<any>(`${this.baseUrl}`, data);
   }
 
   updateDestino(cod_destino: string, data: any): Observable<any> {
-    return this.http.patch<any>(`${this.baseUrl}/${cod_destino}`, data, { withCredentials: true });
+    return this.http.patch<any>(`${this.baseUrl}/${cod_destino}`, data);
   }
 
   deleteDestino(cod_destino: string): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${cod_destino}`, { withCredentials: true });
+    return this.http.delete<any>(`${this.baseUrl}/${cod_destino}`);
   }
 }

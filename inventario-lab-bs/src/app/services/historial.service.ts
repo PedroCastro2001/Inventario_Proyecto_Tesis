@@ -23,6 +23,6 @@ export class HistorialService {
       params = params.set('tipo', tipo);
     }
 
-    return this.http.get(this.baseUrl, { params , withCredentials: true });
+    return this.http.get(this.baseUrl, { params});
   }
 }

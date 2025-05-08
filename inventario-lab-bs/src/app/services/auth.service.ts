@@ -17,15 +17,15 @@ export class AuthService {
   }
 
   login(data: { username: string, password: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, data, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}/login`, data);
   }
 
   registrarNombreInvitado(nombre_real: string, id_sesion: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/registrarNombreInvitado`, { nombre_real, id_sesion }, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}/registrarNombreInvitado`, { nombre_real, id_sesion });
   }
 
   logout(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/logout`, { withCredentials: true });
+    return this.http.get(`${this.baseUrl}/logout`);
   }
 
 }

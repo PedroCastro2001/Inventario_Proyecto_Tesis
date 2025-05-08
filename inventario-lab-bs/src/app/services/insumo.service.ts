@@ -13,22 +13,22 @@ export class InsumoService {
   constructor(private http: HttpClient) { }
 
   getInsumos(): Observable<any> {
-    return this.http.get(`${this.baseUrl}`, { withCredentials: true });
+    return this.http.get(`${this.baseUrl}`);
   }
 
   getInsumo(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${id}`, { withCredentials: true });
+    return this.http.get(`${this.baseUrl}/${id}`);
   }
 
   createInsumo(insumo: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, insumo, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}`, insumo);
   }
 
   updateInsumo(id: string, insumo: any): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/${id}`, insumo, { withCredentials: true });
+    return this.http.patch(`${this.baseUrl}/${id}`, insumo);
   }
 
   deleteInsumo(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { withCredentials: true });
+    return this.http.delete(`${this.baseUrl}/${id}`);
   }
 }

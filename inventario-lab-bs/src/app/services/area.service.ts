@@ -13,22 +13,22 @@ export class AreaService {
   constructor(private http: HttpClient) {}
 
   getAreas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}`, { withCredentials: true });
+    return this.http.get<any[]>(`${this.baseUrl}`);
   }
 
   getArea(cod_area: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${cod_area}`, { withCredentials: true });
+    return this.http.get<any>(`${this.baseUrl}/${cod_area}`);
   }
 
   createArea(data: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}`, data, { withCredentials: true });
+    return this.http.post<any>(`${this.baseUrl}`, data);
   }
 
   updateArea(cod_area: string, data: any): Observable<any> {
-    return this.http.patch<any>(`${this.baseUrl}/${cod_area}`, data, { withCredentials: true });
+    return this.http.patch<any>(`${this.baseUrl}/${cod_area}`, data);
   }
 
   deleteArea(cod_area: string): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${cod_area}`, { withCredentials: true });
+    return this.http.delete<any>(`${this.baseUrl}/${cod_area}`);
   }
 }

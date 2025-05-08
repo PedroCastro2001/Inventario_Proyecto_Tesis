@@ -13,14 +13,14 @@ export class IngresosService {
   constructor(private http: HttpClient) { }
 
   createIngreso(ingreso: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, ingreso, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}`, ingreso);
   }
 
   createMultipleIngresos(ingresos: any[], no_requisicion: number): Observable<any> {
     return this.http.post(`${this.baseUrl}/lote`, {
       ingresos,
       no_requisicion
-    }, { withCredentials: true });
+    });
   }
 }
 

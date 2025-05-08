@@ -14,6 +14,6 @@ export class ExistenciasConsumosService {
 
   obtenerReporteExistencias(fecha: string): Observable<any> {
     const params = new HttpParams().set('fecha', fecha);
-    return this.http.get(`${this.baseUrl}`, { params, withCredentials: true });
+    return this.http.get(`${this.baseUrl}`, { params});
   }
 }
