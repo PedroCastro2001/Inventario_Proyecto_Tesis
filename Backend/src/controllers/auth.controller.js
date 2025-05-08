@@ -74,6 +74,13 @@ export const login = async (req, res) => {
 
         res.json({
             message: 'Login exitoso',
+            usuario: {
+                id: user.id_usuario,
+                username: user.nombre_usuario,
+                full_name: user.rol === "Administrador" ? user.nombre_completo : null, 
+                rol: user.rol,
+                id_sesion: idSesion
+            }
             //usuario: req.session.user
         });
 
