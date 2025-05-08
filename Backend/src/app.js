@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cors({
   origin: "https://gestion-insumos-lab-bs.web.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
-  //credentials: true,
+  credentials: false,
 }));
 /*app.use(session({
   secret: 'my_secret',  
