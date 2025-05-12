@@ -1,5 +1,6 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
@@ -7,7 +8,7 @@ import { SliderModule } from 'primeng/slider';
 import { Table, TableModule } from 'primeng/table';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-import { ToastModule } from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';   
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -43,8 +44,10 @@ import { PresentacionService } from '../../../services/presentacion.service';
     IconFieldModule,
     FluidModule,
     DatePickerModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    ConfirmDialog,
   ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './insumos.component.html',
   styleUrl: './insumos.component.css'
 })
@@ -52,7 +55,12 @@ export class InsumosComponent implements OnInit{
   insumos: any[] = [];
   expandedRows: { [key: string]: boolean } = {}; 
 
-  constructor(private insumosService: InsumoService, private presentacionesService: PresentacionService) {}
+  constructor(
+    private insumosService: InsumoService, 
+    private presentacionesService: PresentacionService, 
+    private messageService: MessageService, 
+    private confirmationService: ConfirmationService
+  ) {}
 
   cod_insumo: string = '';
   nombre: string = '';
@@ -107,6 +115,28 @@ export class InsumosComponent implements OnInit{
       cant_min: this.cant_min,
       cant_max: this.cant_max
     };
+
+    if (!insumo.cod_insumo.trim()){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El código del insumo no puede estar vacío' });
+      return;
+    }
+
+    if (!insumo.nombre.trim()){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El nombre del insumo no puede estar vacío' });
+      return;
+    }
+
+    if (this.presentaciones.length === 0) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Debe agregar al menos una presentación' });
+      return;
+    }
+
+    const hayCamposVacios = this.presentaciones.some(p => !p.codigo?.trim() || !p.descripcion?.trim());
+
+    if (hayCamposVacios) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Todos los campos de las presentaciones deben estar completos' });
+      return;
+    }
 
     this.insumosService.createInsumo(insumo).subscribe((response: any) => {
       console.log('Insumo guardado con éxito', response);

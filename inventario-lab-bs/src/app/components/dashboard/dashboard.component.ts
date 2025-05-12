@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [
+    Card
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

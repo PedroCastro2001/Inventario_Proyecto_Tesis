@@ -1,12 +1,14 @@
 import { Component, ElementRef, inject, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { Table, TableModule } from 'primeng/table';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
-
+import { ToastModule } from 'primeng/toast';
 import { InsumoService } from '../../../services/insumo.service';
 import { PresentacionService } from '../../../services/presentacion.service';
 import { EgresosService } from '../../../services/egresos.service';
@@ -29,8 +31,11 @@ import { IconField, IconFieldModule } from 'primeng/iconfield';
     CommonModule,
     FormsModule,
     ButtonModule,
-    IconFieldModule
+    IconFieldModule,
+    ToastModule,
+    ConfirmDialog,
   ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './egresos.component.html',
   styleUrl: './egresos.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush 
@@ -54,7 +59,9 @@ export class EgresosComponent implements OnInit{
     private presentacionService: PresentacionService,
     private egresosService: EgresosService,
     private areaService: AreaService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ){}
 
   cod_insumo: string = '';
@@ -209,6 +216,36 @@ onRowEditCancel(egreso: any, index: number) {
   egreso.editing = false;
 }
 
+confirmarGuardado(event: Event) {
+  this.confirmationService.confirm({
+    target: event.target as EventTarget,
+    message: '¿Estás seguro de que deseas guardar todos los egresos?',
+    header: 'Confirmar Guardado',
+    icon: 'pi pi-check-circle',
+    closable: true,
+    closeOnEscape: true,
+    rejectButtonProps: {
+      label: 'Cancelar',
+      severity: 'secondary',
+      outlined: true,
+    },
+    acceptButtonProps: {
+      label: 'Guardar',
+      severity: 'success',
+    },
+    accept: () => {
+      this.guardarTodosLosEgresos();
+    },
+    reject: () => {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Cancelado',
+        detail: 'No se guardaron los egresos',
+      });
+    },
+  });
+}
+
 guardarTodosLosEgresos() {
   const cod_area = this.areaSeleccionada?.cod_area;
   const egresosAGuardar = this.egresos
@@ -219,7 +256,12 @@ guardarTodosLosEgresos() {
   }));
 
   if (egresosAGuardar.length === 0) {
-    alert('No hay egresos para guardar.');
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No hay egresos para guardar' });
+    return;
+  }
+
+  if (!this.areaSeleccionada){
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar un área' });
     return;
   }
 
@@ -239,10 +281,16 @@ guardarTodosLosEgresos() {
     }
   })
 
+  
+
   this.egresosService.createMultipleEgresos(egresosFormateados).subscribe({
     next: (res) => {
       console.log(res);
-      alert('Egresos guardados correctamente en la BD');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Guardado',
+        detail: 'Egresos guardados correctamente en la base de datos',
+      });
       this.egresos = [this.crearFilaEditable()]; 
       
     },
@@ -273,7 +321,39 @@ agregarFilaVacia(){
 }
 
 onGuardarEgreso(){
-  if (!this.filaEditable.cod_insumo) return;
+  if (!this.filaEditable.cod_insumo){
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El código del insumo no puede estar vacío' });
+    return;
+  } 
+
+  if (!this.filaEditable.presentacion || !this.filaEditable.presentacion.nombre?.trim()){
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar una presentación' });
+    return;
+  }
+
+  if (!this.filaEditable.lote_seleccionado){
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar un lote' });
+    return;
+  }
+
+  if (
+    this.filaEditable.cantidad_ingresada === null ||
+    this.filaEditable.cantidad_ingresada === undefined ||
+    this.filaEditable.cantidad_ingresada === '' ||
+    +this.filaEditable.cantidad_ingresada <= 0
+  ) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Debe ingresar una cantidad válida mayor a cero.',
+    });
+    return;
+  }
+
+
+
+
+
 
   const egresoNuevo = {
     ...this.filaEditable,

@@ -1,5 +1,6 @@
 import { Component, ElementRef, inject, OnInit, ViewChild, ViewChildren, QueryList, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
@@ -49,8 +50,10 @@ interface expandedRows {
     IconFieldModule,
     FluidModule,
     DatePickerModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    ConfirmDialog,
   ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './ingresos.component.html',
   styleUrl: './ingresos.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush 
@@ -90,8 +93,9 @@ export class IngresosComponent implements OnInit{
       private ingresosService: IngresosService,
       private insumosService: InsumoService,
       private presentacionesService: PresentacionService,
-      private cdRef: ChangeDetectorRef 
-      
+      private cdRef: ChangeDetectorRef,
+      private messageService: MessageService,
+      private confirmationService: ConfirmationService
   ) {}
 
   no_requisicion: string = '';
@@ -232,17 +236,47 @@ export class IngresosComponent implements OnInit{
       }
   }
 
+  confirmarGuardado(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: '¿Estás seguro de que deseas guardar todos los ingresos?',
+      header: 'Confirmar Guardado',
+      icon: 'pi pi-check-circle',
+      closable: true,
+      closeOnEscape: true,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Guardar',
+        severity: 'success',
+      },
+      accept: () => {
+        this.guardarTodosLosIngresos(); 
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Cancelado',
+          detail: 'No se guardaron los ingresos',
+        });
+      },
+    });
+  }
+  
   guardarTodosLosIngresos() {
     const ingresosAGuardar = this.ingresos.filter((ing) => ing.cod_insumo && ing !== this.filaEditable);
   
     if (ingresosAGuardar.length === 0) {
-      alert('No hay ingresos para guardar.');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No hay ingresos para guardar' });
       return;
     }
   
     const noReqNum = Number(this.no_requisicion);
     if (isNaN(noReqNum) || noReqNum <= 0) {
-      alert('El número de requisición no es válido.');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El número de requisición no es válido' });
       return;
     }
 
@@ -267,7 +301,11 @@ export class IngresosComponent implements OnInit{
     this.ingresosService.createMultipleIngresos(ingresosFormateados, noReqNum).subscribe({
       next: (res) => {
         console.log(res);
-        alert('Ingresos guardados correctamente en la BD');
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Guardado',
+          detail: 'Ingresos guardados correctamente en la base de datos',
+        });
         this.ingresos = [this.crearFilaEditable()];
         
       },
@@ -297,7 +335,35 @@ agregarFilaVacia() {
   }
 
   onGuardarIngreso() {
-    if (!this.filaEditable.cod_insumo) return;
+    if (!this.filaEditable.cod_insumo){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El código del insumo no puede estar vacío' });
+      return;
+    }
+
+    if (!this.filaEditable.presentacion || !this.filaEditable.presentacion.nombre?.trim()){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar una presentación' });
+      return;
+    }
+
+    if (!this.filaEditable.cod_lote){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El código de lote no puede estar vacío' });
+      return;
+    }
+
+    if (!this.filaEditable.fecha_vencimiento){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'La fecha de vencimiento no puede estar vacía' });
+      return;
+    }
+
+    if (this.filaEditable.cantidad_ingresada <= 0 || !this.filaEditable.cantidad_ingresada){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'La cantidad ingresada debe ser mayor a 0' });
+      return;
+    }
+
+    if (this.filaEditable.cantidad_solicitada <= 0 || !this.filaEditable.cantidad_solicitada){
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'La cantidad solicitada debe ser mayor a 0' });
+      return;
+    }
 
     const ingresoNuevo = {
         ...this.filaEditable,
@@ -355,6 +421,12 @@ guardarIngreso(){
     }, error => {
         console.error('Error al guardar el ingreso:', error);
     });
+}
+
+actualizarDemandaInsatisfecha(fila: any) {
+  const ingresada = Number(fila.cantidad_ingresada) || 0;
+  const solicitada = Number(fila.cantidad_solicitada) || 0;
+  fila.demanda_insatisfecha = solicitada - ingresada;
 }
 
 }

@@ -18,7 +18,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors({
-  origin: "https://gestion-insumos-lab-bs.web.app",
+  origin: "http://localhost:4200",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: false,
 }));

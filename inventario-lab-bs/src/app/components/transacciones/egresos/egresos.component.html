@@ -1,4 +1,5 @@
 <div class="card">
+    <p-toast />
     <div class="md:w-full">
         <div class="card flex flex-col gap-4">
             <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
@@ -22,8 +23,9 @@
                 label="Guardar Registros" 
                 icon="pi pi-save"
                 severity="info"
-                (click)="guardarTodosLosEgresos()"
+                (click)="confirmarGuardado($event)"
                 rounded />
+                <p-confirmDialog></p-confirmDialog>
             </div>
             
         </div>

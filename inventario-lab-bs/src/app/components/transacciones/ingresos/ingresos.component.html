@@ -1,4 +1,5 @@
 <div class="card">
+    <p-toast />
     <div class="md:w-full">
         <div class="card flex flex-col gap-4">
             <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
@@ -15,8 +16,9 @@
                 label="Guardar Registro" 
                 icon="pi pi-save"
                 severity="info"
-                (click)="guardarTodosLosIngresos()"
+                (click)="confirmarGuardado($event)"
                 rounded />
+                <p-confirmDialog></p-confirmDialog>
             </div>
             
         </div>
@@ -135,9 +137,25 @@
                     inputId="icondisplay" 
                     appendTo="body"
                     /></td>
-                <td><input pInputText [(ngModel)]="filaEditable.cantidad_ingresada" /></td>
-                <td><input pInputText [(ngModel)]="filaEditable.cantidad_solicitada" /></td>
-                <td><input pInputText [(ngModel)]="filaEditable.demanda_insatisfecha" /></td>
+                <td><input 
+                    pInputText 
+                    [(ngModel)]="filaEditable.cantidad_ingresada" 
+                    (ngModelChange)="actualizarDemandaInsatisfecha(filaEditable)" 
+                    />
+                </td>
+                <td>
+                    <input 
+                    pInputText 
+                    [(ngModel)]="filaEditable.cantidad_solicitada" 
+                    (ngModelChange)="actualizarDemandaInsatisfecha(filaEditable)" 
+                    />
+                </td>
+                <td><input 
+                    pInputText 
+                    [(ngModel)]="filaEditable.demanda_insatisfecha"
+                    [readonly]="true" 
+                    />
+                </td>
                 <td><input pInputText [(ngModel)]="filaEditable.observaciones" /></td>
                 <td class="text-center">
                   <p-button

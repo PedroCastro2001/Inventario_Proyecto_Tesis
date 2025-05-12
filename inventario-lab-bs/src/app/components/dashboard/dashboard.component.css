@@ -1,0 +1,10 @@
+::ng-deep .banner-card {
+    background-color: #0284c7;  /* Color similar a sky-700 */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 1.5rem;
+    font-size: 2rem;  /* Tamaño más grande */
+    font-weight: bold;  /* Texto en negrita */
+    margin-bottom: 1rem;
+  }

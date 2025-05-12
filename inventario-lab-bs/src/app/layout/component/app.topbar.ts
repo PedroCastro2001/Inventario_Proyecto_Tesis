@@ -80,7 +80,11 @@ export class AppTopbar {
     }
 
     logout() {
-        this.authService.logout().subscribe({
+        localStorage.removeItem('usuario');  
+        localStorage.removeItem('id_sesion');
+        localStorage.removeItem('mostrarBienvenida');
+        this.router.navigate(['/login']);
+        /*this.authService.logout().subscribe({
           next: (res) => {
             console.log('Sesión cerrada correctamente');
             localStorage.removeItem('usuario');  
@@ -96,7 +100,7 @@ export class AppTopbar {
               detail: 'No se pudo cerrar sesión correctamente'
             });
           }
-        });
+        });*/
     }
 
 
