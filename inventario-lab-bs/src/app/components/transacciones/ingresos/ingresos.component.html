@@ -75,8 +75,11 @@
                     </div>
                 </th>
                 <th style="width: 6rem">
-                    <div class="flex justify-between items-center">
-                        Demanda Insatisfecha
+                    <div class="flex justify-between items-center"
+                    [pTooltip]="'Valor positivo: Excedente \n Valor negativo: Faltante'" 
+                    tooltipPosition="top"
+                    tooltipStyleClass="custom-tooltip">
+                        Diferencia
                     </div>
                 </th>
                 <th style="min-width: 12rem">

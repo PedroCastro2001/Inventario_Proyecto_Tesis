@@ -48,6 +48,7 @@ import { ExistenciasConsumosService } from '../../../services/existencias-consum
   styleUrl: './existencias-consumos.component.css'
 })
 export class ExistenciasConsumosComponent implements OnInit{
+  desdeFecha: Date | null = null;
   hastaFecha: Date | null = null;
   existenciasConsumos: any[] = [];
   cargando: boolean = false;
@@ -55,19 +56,23 @@ export class ExistenciasConsumosComponent implements OnInit{
   constructor(private existenciasConsumosService: ExistenciasConsumosService) {}
 
   ngOnInit(): void {
-    this.hastaFecha = new Date(); 
+    this.desdeFecha = new Date();
+    this.hastaFecha = new Date();
     this.consultarExistenciasConsumos();
   }
 
   consultarExistenciasConsumos() {
-    if (!this.hastaFecha) {
+    if (!this.hastaFecha || !this.desdeFecha) {
       return;
     }
 
+
+    const fechaFormateadaInicio = this.desdeFecha.toISOString().split('T')[0];
     const fechaFormateada = this.hastaFecha.toISOString().split('T')[0];
 
+
     this.cargando = true;
-    this.existenciasConsumosService.obtenerReporteExistencias(fechaFormateada).subscribe({
+    this.existenciasConsumosService.obtenerReporteExistencias(fechaFormateadaInicio, fechaFormateada).subscribe({
       next: (data) => {
         this.existenciasConsumos = data;
         console.log('Existencias y consumos:', this.existenciasConsumos);

@@ -3,3 +3,6 @@
 @import './assets/demo/demo.scss';
 @import '../node_modules/primeicons/primeicons.css';
 
+:root ::ng-deep .p-column-filter-clear-button {
+  display: none !important;
+}

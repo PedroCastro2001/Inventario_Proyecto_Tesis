@@ -18,17 +18,45 @@
                   ></p-datepicker>
                 </div>
               </div>
-              <div class="col-span-12 md:col-span-3 flex justify-end">
+              <div class="col-span-12 md:col-span-3 flex justify-end gap-2">
                 <p-button 
                 label="Consultar" 
                 icon="pi pi-search"
                 severity="info"
                 (click)="consultarResumenStock()"
                 rounded />
+                <p-button 
+                label="Imprimir" 
+                icon="pi pi-print"
+                severity="secondary"
+                (click)="imprimir()"
+                rounded />
             </div>
         </div>
     </div>
-    <p-table [value]="resumenStock" rowGroupMode="rowspan" groupRowsBy="cod_insumo" sortField="cod_insumo" sortMode="single" [tableStyle]="{ 'min-width': '75rem' }">
+    <p-table 
+        #dt2
+        [value]="resumenStock" 
+        rowGroupMode="rowspan" 
+        groupRowsBy="cod_insumo" 
+        sortField="cod_insumo" 
+        sortMode="single" 
+        [globalFilterFields]="['cod_insumo', 'insumo']"
+        [tableStyle]="{ 'min-width': '75rem' }">
+        <ng-template #caption>
+            <div class="flex">
+            <p-iconfield iconPosition="left" class="ml-auto">
+                <p-inputicon>
+                    <i class="pi pi-search"></i>
+                </p-inputicon>
+                <input 
+                pInputText 
+                type="text" 
+                (input)="onGlobalFilter($event, dt2)" 
+                placeholder="Buscar por código o insumo" />
+            </p-iconfield>
+        </div>
+        </ng-template>
         <ng-template #header>
             <tr>
                 <th>Código Insumo</th>

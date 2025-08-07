@@ -45,7 +45,6 @@ import { PresentacionService } from '../../../services/presentacion.service';
     FluidModule,
     DatePickerModule,
     AutoCompleteModule,
-    ConfirmDialog,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './insumos.component.html',
@@ -67,7 +66,7 @@ export class InsumosComponent implements OnInit{
   cant_min: number | null = null;
   cant_max: number | null = null;
 
-  presentaciones: { codigo: string, descripcion: string }[] = [];
+  presentaciones: { codigo: string, descripcion: string, forma_despacho: string }[] = [];
 
   ngOnInit() {
     this.cod_insumo = '';
@@ -100,7 +99,7 @@ export class InsumosComponent implements OnInit{
   }
 
   agregarPresentacion() {
-    this.presentaciones.push({ codigo: '', descripcion: '' });
+    this.presentaciones.push({ codigo: '', descripcion: '', forma_despacho: '' });
   }
 
   eliminarPresentacion(index: number) {
@@ -131,7 +130,12 @@ export class InsumosComponent implements OnInit{
       return;
     }
 
-    const hayCamposVacios = this.presentaciones.some(p => !p.codigo?.trim() || !p.descripcion?.trim());
+    const hayCamposVacios = this.presentaciones.some(p => 
+        !p.codigo?.trim() || 
+        !p.descripcion?.trim() || 
+        isNaN(Number(p.forma_despacho)) || 
+        Number(p.forma_despacho) <= 0
+    );
 
     if (hayCamposVacios) {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Todos los campos de las presentaciones deben estar completos' });
@@ -154,6 +158,7 @@ export class InsumosComponent implements OnInit{
       const presentacionData = {
         cod_presentacion: presentacion.codigo,  
         nombre: presentacion.descripcion,
+        forma_despacho: presentacion.forma_despacho,
         cod_insumo: codInsumo,
         fecha_creacion: new Date()
       };

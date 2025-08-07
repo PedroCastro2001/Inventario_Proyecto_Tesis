@@ -48,14 +48,14 @@ export const getPresentacionesInsumo = async (req, res) => {
 
 export const createPresentacion = async (req, res) => {
     try {
-        const { cod_presentacion, nombre, cod_insumo } = req.body;
+        const { cod_presentacion, nombre, forma_despacho, cod_insumo } = req.body;
         const fecha_creacion = new Date(); 
         const [result] = await pool.query(
-            "INSERT INTO presentacion (cod_presentacion, nombre, cod_insumo, fecha_creacion) VALUES (?, ?, ?, ?)",
-            [cod_presentacion, nombre, cod_insumo, fecha_creacion]
+            "INSERT INTO presentacion (cod_presentacion, nombre, forma_despacho, cod_insumo, fecha_creacion) VALUES (?, ?, ?, ?, ?)",
+            [cod_presentacion, nombre, forma_despacho, cod_insumo, fecha_creacion]
         );
 
-        res.status(201).json({ cod_presentacion, nombre, cod_insumo, fecha_creacion });
+        res.status(201).json({ cod_presentacion, nombre, forma_despacho, cod_insumo, fecha_creacion });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Algo salió mal" });
@@ -65,11 +65,11 @@ export const createPresentacion = async (req, res) => {
 export const updatePresentacion = async (req, res) => {
     try {
         const { cod_presentacion } = req.params;
-        const { nombre, cod_insumo, fecha_creacion } = req.body;
+        const { nombre, forma_despacho, cod_insumo, fecha_creacion } = req.body;
 
         const [result] = await pool.query(
-            "UPDATE presentacion SET nombre = IFNULL(?, nombre), cod_insumo = IFNULL(?, cod_insumo), fecha_creacion = IFNULL(?, fecha_creacion), WHERE cod_presentacion = ?",
-            [nombre, cod_insumo, fecha_creacion, cod_presentacion]
+            "UPDATE presentacion SET nombre = IFNULL(?, nombre), forma_despacho = IFNULL(?, forma_despacho), cod_insumo = IFNULL(?, cod_insumo), fecha_creacion = IFNULL(?, fecha_creacion) WHERE cod_presentacion = ?",
+            [nombre, forma_despacho, cod_insumo, fecha_creacion, cod_presentacion]
         );
 
         if (result.affectedRows === 0) {

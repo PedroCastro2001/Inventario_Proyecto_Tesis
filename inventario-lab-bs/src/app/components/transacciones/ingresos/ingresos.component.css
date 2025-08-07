@@ -9,3 +9,10 @@
 .hidden-init-btn {
     display: none !important;
   }
+
+  ::ng-deep .custom-tooltip {
+  max-width: 200px;
+  white-space: normal;
+  font-size: 14px;
+  text-align: left;
+}

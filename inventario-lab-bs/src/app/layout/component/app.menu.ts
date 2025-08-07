@@ -58,6 +58,11 @@ export class AppMenu {
                                 routerLink: ['/egresos']
                             },
                             {
+                                label: 'Requisiciones pendientes',
+                                icon: 'pi pi-file-edit',
+                                routerLink: ['/requisiciones-temporales']
+                            },
+                            {
                                 label: 'Historial de movimientos',
                                 icon: 'pi pi-history',
                                 routerLink: ['/historial']

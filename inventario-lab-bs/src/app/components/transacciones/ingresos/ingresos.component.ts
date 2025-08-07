@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, ViewChild, ViewChildren, QueryList, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -19,7 +19,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { TagModule } from 'primeng/tag';
 import { FluidModule } from 'primeng/fluid';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { TooltipModule } from 'primeng/tooltip';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { IngresosService } from '../../../services/ingresos.service';
 import { InsumoService } from '../../../services/insumo.service';
@@ -52,6 +53,7 @@ interface expandedRows {
     DatePickerModule,
     AutoCompleteModule,
     ConfirmDialog,
+    TooltipModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './ingresos.component.html',
@@ -186,15 +188,6 @@ export class IngresosComponent implements OnInit{
         })
 }
 
-  /*expandAll() {
-      if (!this.isExpanded) {
-          this.products.forEach((product) => (product && product.name ? (this.expandedRows[product.name] = true) : ''));
-      } else {
-          this.expandedRows = {};
-      }
-      this.isExpanded = !this.isExpanded;
-  }*/
-
   formatCurrency(value: number) {
       return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
   }
@@ -237,7 +230,15 @@ export class IngresosComponent implements OnInit{
   }
 
   confirmarGuardado(event: Event) {
-    this.confirmationService.confirm({
+    if (!this.no_requisicion || this.no_requisicion.trim() === '') {
+      this.modalGuardarConReqTemp(event);
+    } else {
+      this.modalGuardar(event);
+    }
+  }
+
+  modalGuardar(event: Event){
+      this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: '¿Estás seguro de que deseas guardar todos los ingresos?',
       header: 'Confirmar Guardado',
@@ -254,7 +255,39 @@ export class IngresosComponent implements OnInit{
         severity: 'success',
       },
       accept: () => {
-        this.guardarTodosLosIngresos(); 
+          this.guardarTodosLosIngresos();
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Cancelado',
+          detail: 'No se guardaron los ingresos',
+        });
+      },
+    });
+  }
+
+  modalGuardarConReqTemp(event: Event) {
+    this.confirmationService.confirm({
+    target: event.target as EventTarget,
+    message: 'No ingresó el número de requisición, ¿Desea guardar todos los ingresos con un número de requisición temporal?',
+    header: 'Advertencia',
+    icon: 'pi pi-exclamation-triangle',
+    closable: true,
+    closeOnEscape: true,
+    rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Aceptar',
+        severity: 'success',
+      },
+      accept: () => {
+        this.no_requisicion = this.generarNoRequisicionTemporal();
+        console.log('Número de requisición temporal generado:', this.no_requisicion);
+        this.guardarTodosLosIngresos();
       },
       reject: () => {
         this.messageService.add({
@@ -274,9 +307,8 @@ export class IngresosComponent implements OnInit{
       return;
     }
   
-    const noReqNum = Number(this.no_requisicion);
-    if (isNaN(noReqNum) || noReqNum <= 0) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El número de requisición no es válido' });
+    if (!this.no_requisicion || this.no_requisicion.trim() === '') {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El número de requisición no puede estar vacío' });
       return;
     }
 
@@ -298,7 +330,7 @@ export class IngresosComponent implements OnInit{
 
     console.log('Ingresos a guardar:', ingresosFormateados);
   
-    this.ingresosService.createMultipleIngresos(ingresosFormateados, noReqNum).subscribe({
+    this.ingresosService.createMultipleIngresos(ingresosFormateados, this.no_requisicion).subscribe({
       next: (res) => {
         console.log(res);
         this.messageService.add({
@@ -426,7 +458,18 @@ guardarIngreso(){
 actualizarDemandaInsatisfecha(fila: any) {
   const ingresada = Number(fila.cantidad_ingresada) || 0;
   const solicitada = Number(fila.cantidad_solicitada) || 0;
-  fila.demanda_insatisfecha = solicitada - ingresada;
+  fila.demanda_insatisfecha = (solicitada - ingresada) * -1;
+}
+
+generarNoRequisicionTemporal(): string {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const hh = String(now.getHours()).padStart(2, '0');
+  const min = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  return `TMP-${yyyy}${mm}${dd}-${hh}${min}${ss}`;
 }
 
 }

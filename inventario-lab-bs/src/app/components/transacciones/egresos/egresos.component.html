@@ -1,3 +1,14 @@
+    <p-dialog header="Aviso" [modal]="true" [(visible)]="mostrarDialogJustificacion" [style]="{ width: '25rem' }">
+        <span class="p-text-secondary block mb-8">Justifique la elección de este lote, ya que hay lotes con fecha de vencimiento menor a 3 meses.</span>
+        <div class="flex items-center gap-4 mb-4">
+            <input pInputText id="justificacion"  [(ngModel)]="justificacionTexto" class="flex-auto" autocomplete="off" />
+        </div>
+        <div class="flex justify-end gap-2">
+            <p-button label="Escoger otro lote" severity="secondary" (click)="mostrarDialogJustificacion = false" />
+            <p-button label="Guardar" (click)="guardarJustificacion()" />
+        </div>
+    </p-dialog>
+
 <div class="card">
     <p-toast />
     <div class="md:w-full">
@@ -139,6 +150,11 @@
                     appendTo="body"
                     >
                     <ng-template let-lote pTemplate="item">
+                        <span 
+                            class="inline-block w-3 h-3 rounded-full mr-2"
+                            [ngClass]="getColorClase(lote.fecha_vencimiento)"
+                            title="Fecha de vencimiento: {{ lote.fecha_vencimiento | date:'dd/MM/yyyy' }}">
+                        </span>
                         {{ lote.cod_lote }} - Vence: {{ lote.fecha_vencimiento | date:'dd/MM/yyyy' }}
                     </ng-template>
                     </p-autoComplete>

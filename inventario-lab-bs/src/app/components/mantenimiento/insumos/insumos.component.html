@@ -37,9 +37,12 @@
                     <input pInputText [(ngModel)]="presentacion.codigo" type="text" placeholder="Código Presentación"/>
                 </div>
                 <div class="col-span-2 md:col-span-2 mr-2 flex items-center justify-center">
-                    <input pInputText [(ngModel)]="presentacion.descripcion" type="text" placeholder="Descripción"/>
+                    <input pInputText [(ngModel)]="presentacion.descripcion" type="f" placeholder="Descripción"/>
                 </div>
-                <div class="flex items-center">
+                <div class="col-span-2 md:col-span-2 mr-2 flex items-center justify-start">
+                    <input pInputText [(ngModel)]="presentacion.forma_despacho" type="text" placeholder="Forma de despacho"/>
+                </div>
+                <div class="flex items-end">
                     <p-button icon="pi pi-trash" severity="danger" rounded (click)="eliminarPresentacion(i)" />
                 </div>
             </div>
@@ -91,6 +94,7 @@
                       <tr>
                         <th pSortableColumn="cod_presentacion">Código <p-sortIcon field="cod_presentacion" /></th>
                         <th pSortableColumn="descripcion">Descripción <p-sortIcon field="descripcion" /></th>
+                        <th pSortableColumn="forma_despacho">Forma de despacho <p-sortIcon field="forma_despacho" /></th>
                         <th pSortableColumn="fecha_creacion">Fecha de creación <p-sortIcon field="fecha_creacion" /></th>
                       </tr>
                     </ng-template>
@@ -98,6 +102,7 @@
                       <tr>
                         <td>{{ presentacion.cod_presentacion }}</td>
                         <td>{{ presentacion.nombre }}</td>
+                        <td>{{ presentacion.forma_despacho }}</td>
                         <td>{{ presentacion.fecha_creacion | date: 'dd/MM/yyyy'}}</td>
                       </tr>
                     </ng-template>

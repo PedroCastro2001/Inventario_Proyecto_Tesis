@@ -19,9 +19,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { TagModule } from 'primeng/tag';
 import { FluidModule } from 'primeng/fluid';
 import { AreaService } from '../../../services/area.service';
-import { DestinoService } from '../../../services/destino.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { ChangeDetectorRef } from '@angular/core';
 

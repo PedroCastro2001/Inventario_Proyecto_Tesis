@@ -16,11 +16,20 @@ export class IngresosService {
     return this.http.post(`${this.baseUrl}`, ingreso);
   }
 
-  createMultipleIngresos(ingresos: any[], no_requisicion: number): Observable<any> {
+  createMultipleIngresos(ingresos: any[], no_requisicion: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/lote`, {
       ingresos,
       no_requisicion
     });
+  }
+
+  getIngresosReqTemporal(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/req_temporales`);
+  }
+
+  updateNoRequisicion(tempNoRequisicion: string, newNoRequisicion: string): Observable<any> {
+    console.log('Actualizando número de requisición:', tempNoRequisicion, 'a', newNoRequisicion);
+    return this.http.post(`${this.baseUrl}/actualizar_no_requisicion`, { tempNoRequisicion, newNoRequisicion });
   }
 }
 

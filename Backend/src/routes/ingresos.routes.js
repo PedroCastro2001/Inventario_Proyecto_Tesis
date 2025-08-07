@@ -7,15 +7,19 @@ import {
     getIngreso,
     getIngresos,
     createIngresosConTransaccion,
+    getIngresosReqTemporal,
+    updateNoRequisicion,
 } from "../controllers/ingresos.controller.js";
 import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
 
 router.get("/ingresos", getIngresos);
+router.get("/ingresos/req_temporales", getIngresosReqTemporal)
 router.get("/ingresos/:cod_ingreso", getIngreso);
 router.delete("/ingresos/:cod_ingreso", deleteIngreso);
 router.post("/ingresos", createIngreso);
 router.post('/ingresos/lote', createIngresosConTransaccion);
+router.post("/ingresos/actualizar_no_requisicion", updateNoRequisicion);
 
 export default router;

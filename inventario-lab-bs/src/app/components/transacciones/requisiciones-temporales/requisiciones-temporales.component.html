@@ -1,0 +1,81 @@
+<div class="card">
+    <p-toast />
+    <p-confirmDialog></p-confirmDialog>
+    <div class="md:w-full">
+        <div class="card flex flex-col gap-4">
+            <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
+                Requisiciones Pendientes
+            </h1>
+        </div>
+    </div>
+    <p-table
+        [value]="requisicionesTemp"
+        dataKey="linea"
+        [rows]="10"
+        [loading]="loading"
+        [rowHover]="true"
+        [showGridlines]="true"
+        [paginator]="true"
+        responsiveLayout="scroll"
+        scrollable="true"
+        scrollHeight="flex"
+        [style]="{ 'table-layout': 'fixed' }"
+    >
+        <ng-template #header>
+            <tr>
+                <th style="min-width: 12rem">
+                    <div class="flex justify-between items-center">
+                        No. de Requisición
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex justify-between items-center">
+                        Cantidad de ingresos
+                    </div>
+                </th>
+                <th style="min-width: 14rem">
+                    <div class="flex justify-between items-center">
+                        Fecha
+                    </div>
+                </th>
+                <th style="min-width: 8rem">
+                    <div class="flex justify-between items-center">
+                        Acciones
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-reqTemporal>
+            <tr>
+                <td>
+                    <ng-container *ngIf="filaEditando === reqTemporal; else viewMode">
+                        <input pInputText [(ngModel)]="reqTemporal.no_requisicion" />
+                    </ng-container>
+                    <ng-template #viewMode>
+                        {{ reqTemporal.no_requisicion }}
+                    </ng-template>
+                </td>
+                <td>
+                    <span>{{ reqTemporal.cantidad_ingresos }}</span>
+                </td>
+                <td>
+                    <span>{{ reqTemporal.fecha }}</span>
+                </td>
+                <td class="text-center acciones-botones">
+                    <ng-container *ngIf="filaEditando === reqTemporal; else normalButtons">
+                        <button pButton icon="pi pi-check" class="p-button-rounded p-button-success p-button-text mr-2" (click)="guardarEdicion(reqTemporal, $event)"></button>
+                        <button pButton icon="pi pi-times" class="p-button-rounded p-button-secondary p-button-text" (click)="cancelarEdicion(reqTemporal)"></button>
+                    </ng-container>
+                    <ng-template #normalButtons>
+                        <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text mr-2" (click)="editarFila(reqTemporal)"></button>
+                    </ng-template>
+              </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="4">No hay números de requisición pendientes de actualizar.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

@@ -12,8 +12,10 @@ export class ExistenciasConsumosService {
 
   constructor(private http: HttpClient) { }
 
-  obtenerReporteExistencias(fecha: string): Observable<any> {
-    const params = new HttpParams().set('fecha', fecha);
-    return this.http.get(`${this.baseUrl}`, { params});
+  obtenerReporteExistencias(fechaInicio: string, fechaFin: string): Observable<any> {
+    const params = new HttpParams()
+      .set('fecha_inicio', fechaInicio)
+      .set('fecha_fin', fechaFin);
+    return this.http.get(`${this.baseUrl}`, { params });
   }
 }

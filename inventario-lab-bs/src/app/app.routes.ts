@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AppLayout } from './layout/component/app.layout';
 import { MypageComponent } from './core/components/pages/mypage/mypage.component';
 import { IngresosComponent } from './components/transacciones/ingresos/ingresos.component';
+import { RequisicionesTemporalesComponent } from './components/transacciones/requisiciones-temporales/requisiciones-temporales.component';
 import { PresentacionesComponent } from './components/mantenimiento/presentaciones/presentaciones.component';
 import { InsumosComponent } from './components/mantenimiento/insumos/insumos.component';
 import { AreasDestinosComponent } from './components/mantenimiento/areas-destinos/areas-destinos.component';
@@ -23,6 +24,7 @@ export const routes: Routes = [
         children:[
             { path: '', component: DashboardComponent },
             { path: 'ingresos', component: IngresosComponent },
+            { path: 'requisiciones-temporales', component: RequisicionesTemporalesComponent },
             { path: 'egresos', component: EgresosComponent },
             { path: 'historial', component: HistorialComponent },
             { path: 'presentaciones', component: PresentacionesComponent },

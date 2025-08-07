@@ -6,7 +6,6 @@ export const getHistorialMovimientos = async (req, res) => {
     try {
       const { fechaInicio, fechaFin, tipo } = req.query;
   
-      // Consulta base
       let query = `
         SELECT 
           t.fecha,
@@ -54,7 +53,6 @@ export const getHistorialMovimientos = async (req, res) => {
       const condiciones = [];
       const valores = [];
   
-      // Condiciones dinámicas
       if (fechaInicio && fechaFin) {
         condiciones.push("t.fecha BETWEEN ? AND ?");
         valores.push(fechaInicio, fechaFin);

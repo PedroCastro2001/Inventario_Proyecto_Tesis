@@ -214,3 +214,49 @@ export const createIngresosConTransaccion = async (req, res) => {
         return res.status(500).json({ message: "Algo salió mal", error: error.message });
     }
 };
+
+export const getIngresosReqTemporal = async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT 
+                i.no_requisicion, 
+                COUNT(*) as cantidad_ingresos,
+                MIN(t.fecha) as fecha
+            FROM ingreso i
+            JOIN transaccion t ON i.cod_transaccion = t.cod_transaccion
+            WHERE i.no_requisicion LIKE 'TMP-%'
+            GROUP BY i.no_requisicion;
+        `);
+        res.json(rows);
+    } catch (error) {
+        return res.status(500).json({ message: "Algo salió mal", error: error.message });
+    }
+};
+
+export const updateNoRequisicion = async (req, res) => {
+    try {
+        const { tempNoRequisicion, newNoRequisicion } = req.body;
+
+        if (!tempNoRequisicion || !newNoRequisicion) {
+            return res.status(400).json({ message: "Debes enviar el número de requisición temporal y el nuevo número de requisición" });
+        }
+
+        const [result] = await pool.query(
+            "UPDATE ingreso SET no_requisicion = ? WHERE no_requisicion = ?",
+            [newNoRequisicion, tempNoRequisicion]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "No se encontraron ingresos con ese no_requisicion" });
+        }
+
+        res.json({ 
+            message: "Número de requisición actualizado exitosamente",
+            tempNoRequisicion,
+            newNoRequisicion,
+            updatedRows: result.affectedRows
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Algo salió mal", error: error.message });
+    }
+};

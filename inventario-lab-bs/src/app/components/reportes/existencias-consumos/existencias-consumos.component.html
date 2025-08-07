@@ -1,33 +1,49 @@
 <div class="card">
     <div class="md:w-full">
-        <div class="card flex flex-col gap-4">
-            <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
-                Existencias y consumos
-            </h1>
-            <div class="grid grid-cols-12 gap-4 items-center">
-                <label for="fechaFin" class="col-span-2 text-right">Existencia a fecha</label>
-                <div class="col-span-4">
-                  <p-datepicker
-                    [(ngModel)]="hastaFecha"
-                    [showIcon]="true"
-                    iconDisplay="input"
-                    dateFormat="dd/mm/yy"
-                    inputId="hastaFecha"
-                    appendTo="body"
-                    class="w-full"
-                  ></p-datepicker>
-                </div>
-              </div>
-              <div class="col-span-12 md:col-span-3 flex justify-end">
-                <p-button 
-                label="Consultar" 
-                icon="pi pi-search"
-                severity="info"
-                (click)="consultarExistenciasConsumos()"
-                rounded />
-            </div>
-        </div>
+  <div class="card flex flex-col gap-4">
+    <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
+      Existencias y consumos
+    </h1>
+
+    <div class="grid grid-cols-12 gap-4 mb-4">
+      <div class="col-span-12 md:col-span-3 flex flex-col">
+        <label for="fechaInicio" class="mb-1">Desde:</label>
+        <p-datepicker
+          [(ngModel)]="desdeFecha"
+          [showIcon]="true"
+          iconDisplay="input"
+          dateFormat="dd/mm/yy"
+          inputId="desdeFecha"
+          appendTo="body"
+          class="w-full"
+        ></p-datepicker>
+      </div>
+
+      <div class="col-span-12 md:col-span-3 flex flex-col">
+        <label for="fechaFin" class="mb-1">Hasta:</label>
+        <p-datepicker
+          [(ngModel)]="hastaFecha"
+          [showIcon]="true"
+          iconDisplay="input"
+          dateFormat="dd/mm/yy"
+          inputId="hastaFecha"
+          appendTo="body"
+          class="w-full"
+        ></p-datepicker>
+      </div>
+
+      <div class="col-span-12 md:col-span-3 flex items-end">
+        <p-button 
+          label="Consultar" 
+          icon="pi pi-search"
+          severity="info"
+          (click)="consultarExistenciasConsumos()"
+          rounded 
+        />
+      </div>
     </div>
+  </div>
+</div>
     <p-table [value]="existenciasConsumos" rowGroupMode="rowspan" groupRowsBy="cod_insumo" sortField="cod_insumo" sortMode="single" [tableStyle]="{ 'min-width': '75rem' }">
         <ng-template #header>
             <tr>

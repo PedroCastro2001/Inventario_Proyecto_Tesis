@@ -15,7 +15,7 @@ import { EgresosService } from '../../../services/egresos.service';
 import { AreaService } from '../../../services/area.service';
 import { CommonModule } from '@angular/common';
 import { IconField, IconFieldModule } from 'primeng/iconfield';
-
+import { Dialog } from 'primeng/dialog';
 
 @Component({
   selector: 'app-egresos',
@@ -34,6 +34,7 @@ import { IconField, IconFieldModule } from 'primeng/iconfield';
     IconFieldModule,
     ToastModule,
     ConfirmDialog,
+    Dialog
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './egresos.component.html',
@@ -69,6 +70,9 @@ export class EgresosComponent implements OnInit{
   cod_area: string = '';
   cantidad: number = 0;
   observaciones: string = '';
+  mostrarDialogJustificacion: boolean = false;
+  justificacionTexto: string = '';
+
 
 
   ngOnInit(): void {
@@ -192,6 +196,27 @@ onLoteSelect(egreso: any, event: any) {
   egreso.fecha_vencimiento = event.value.fecha_vencimiento;
   egreso.cantidad_ingresada = event.value.cantidad_disponible || 0;
   this.cdRef.detectChanges();
+
+  // Calculando los días restantes hasta la fecha de vencimiento del lote seleccionado
+  const hoy = new Date();
+  const selectedFecha = new Date(event.value.fecha_vencimiento);
+  const selectedDias = Math.ceil((selectedFecha.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Validando si hay algún lote en rojo (fecha de vencimiento < 3 meses)
+  const existeRojo = egreso.lotesDisponibles.some((lote: any) => {
+    const fecha = new Date(lote.fecha_vencimiento);
+    const dias = Math.ceil((fecha.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
+    return dias < 90;
+  });
+
+  console.log("existeRojo:", existeRojo);
+  console.log("selectedDias:", selectedDias);
+
+  // Si el lote seleccionado NO es rojo (<3 meses) pero sí hay rojos disponibles
+  if (existeRojo && selectedDias >= 90) {
+    this.justificarLote();
+  }
+
 }
 
 filtrarLotes(event: any, egreso: any) {
@@ -350,11 +375,6 @@ onGuardarEgreso(){
     return;
   }
 
-
-
-
-
-
   const egresoNuevo = {
     ...this.filaEditable,
     linea: this.contadorLinea++,
@@ -365,6 +385,33 @@ onGuardarEgreso(){
   this.cdRef.detectChanges();
 }
 
+getColorClase(fechaVencimiento: string | Date): string {
+  const hoy = new Date();
+  const fecha = new Date(fechaVencimiento);
+  const dias = Math.ceil((fecha.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
 
+  if (dias < 90) {
+    return 'bg-red-500';        // menor a 3 meses → rojo
+  } else if (dias <= 180) {
+    return 'bg-yellow-500';     // entre 3 y 6 meses → amarillo
+  } else {
+    return 'bg-green-500';      // mayor a 6 meses → verde
+  }
+}
+
+justificarLote(){
+    this.mostrarDialogJustificacion = true;
+}
+
+guardarJustificacion(){
+  if (this.justificacionTexto && this.justificacionTexto.trim() !== '') {
+    // Si la fila actual está en edición, asignamos la justificación como observación
+    this.filaEditable.observaciones = this.justificacionTexto.trim();
+    this.cdRef.detectChanges();
+    console.log('Observación guardada:', this.filaEditable.observaciones);
+  }
+  this.mostrarDialogJustificacion = false;
+  this.justificacionTexto = ''; // Limpiamos el campo
+}
 
 }

@@ -40,14 +40,20 @@
                 </div>
             
                 <!-- Botón Buscar -->
-                <div class="col-span-12 md:col-span-3 flex justify-end">
-                    <p-button 
-                        label="Buscar" 
-                        icon="pi pi-search"
-                        (click)="buscar()"
-                        severity="info"
-                        rounded />
-                </div>
+                <div class="col-span-12 md:col-span-3 flex justify-end gap-2">
+                <p-button 
+                    label="Buscar" 
+                    icon="pi pi-search"
+                    (click)="buscar()"
+                    severity="info"
+                    rounded />
+                <p-button 
+                    label="Imprimir" 
+                    icon="pi pi-print"
+                    (click)="exportarAPDF()"
+                    severity="secondary"
+                    rounded />
+            </div>
             </div>
         </div>
     </div>
