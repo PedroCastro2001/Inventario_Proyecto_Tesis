@@ -25,7 +25,7 @@ export class AreaService {
   }
 
   updateArea(cod_area: string, data: any): Observable<any> {
-    return this.http.patch<any>(`${this.baseUrl}/${cod_area}`, data);
+    return this.http.put<any>(`${this.baseUrl}/${cod_area}`, data);
   }
 
   deleteArea(cod_area: string): Observable<any> {

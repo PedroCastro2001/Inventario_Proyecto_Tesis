@@ -44,7 +44,15 @@
     </div>
   </div>
 </div>
-    <p-table [value]="existenciasConsumos" rowGroupMode="rowspan" groupRowsBy="cod_insumo" sortField="cod_insumo" sortMode="single" [tableStyle]="{ 'min-width': '75rem' }">
+    <p-table [value]="existenciasConsumos" 
+      rowGroupMode="rowspan" 
+      groupRowsBy="cod_insumo" 
+      sortField="cod_insumo" 
+      sortMode="single" 
+      [paginator]="true"
+      [rows]="20"
+      [rowsPerPageOptions]="[20, 40, 50]"
+      [tableStyle]="{ 'min-width': '75rem' }">
         <ng-template #header>
             <tr>
                 <th>Código Insumo</th>

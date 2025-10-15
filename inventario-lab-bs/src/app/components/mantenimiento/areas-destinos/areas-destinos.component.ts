@@ -20,7 +20,7 @@ import { TagModule } from 'primeng/tag';
 import { FluidModule } from 'primeng/fluid';
 import { AreaService } from '../../../services/area.service';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ChangeDetectorRef } from '@angular/core';
 
 interface expandedRows {
@@ -54,6 +54,7 @@ interface Area {
     FluidModule,
     DatePickerModule,
     AutoCompleteModule,
+    ConfirmDialog
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './areas-destinos.component.html',
@@ -129,15 +130,25 @@ cancelarEdicion(rowData: any) {
   this.filaEditando = null;
 }
 
-eliminarFila(rowData: any) {
+eliminarFila(event: Event, rowData: any) {
   this.confirmationService.confirm({
-    message: '¿Estás seguro que quieres eliminar esta área?',
+    target: event.target as EventTarget,
+    message: '¿Estás seguro de que deseas eliminar esta área?',
+    header: 'Confirmar Eliminación',
+    icon: 'pi pi-exclamation-triangle',
     accept: () => {
-      this.messageService.add({ severity: 'success', summary: 'Eliminado', detail: 'Área eliminada correctamente.' });
+      this.areasService.deleteArea(rowData.cod_area).subscribe(
+        (response) => {
+          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Área eliminada correctamente.' });
+          this.areas = this.areas.filter(area => area.cod_area !== rowData.cod_area);
+        },
+        (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar el área.' });
+        }
+      );
     }
   });
 }
-
 
 onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
@@ -153,28 +164,21 @@ onRowEditInit(item: Area) {
   item['original'] = { ...item };
 }
 
-onRowEditSave(item: Area) {
-  if (!item.name.trim()) {
+onRowEditSave(item: any) {
+  if (!item.nombre.trim()) {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El nombre no puede estar vacío' });
     return;
   }
 
-  // Verificar si es un área o un destino y proceder según corresponda
-    this.areasService.getAreas().subscribe((areas) => {
-      // Buscar el área original
-      const area = areas.find(a => a.nombre === item.original?.name);
-      if (area) {
-        // Llamar al servicio de actualización de área
-        this.areasService.updateArea(area.cod_area, { nombre: item.name }).subscribe(
-          () => {
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Área actualizada correctamente' });
-          },
-          (error) => {
-            console.error(error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el área' });
-          }
-        );
-      }
-    });
+  this.areasService.updateArea(item.cod_area, { nombre: item.nombre }).subscribe(
+    (response) => {
+      this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Área actualizada correctamente.' });
+      this.filaEditando = null;
+    },
+    (error) => {
+      console.error(error);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el área.' });
+    }
+  );
 }
 }

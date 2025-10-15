@@ -14,6 +14,6 @@ router.get("/areas", getAreas);
 router.get("/areas/:cod_area", getArea);
 router.delete("/areas/:cod_area", deleteArea);
 router.post("/areas", createArea);
-router.patch("/areas/:cod_area", updateArea);
+router.put("/areas/:cod_area", updateArea);
 
 export default router;

@@ -194,7 +194,23 @@ onLoteSelect(egreso: any, event: any) {
   egreso.lote_seleccionado = event.value;
   egreso.cod_lote = event.cod_lote;
   egreso.fecha_vencimiento = event.value.fecha_vencimiento;
-  egreso.cantidad_ingresada = event.value.cantidad_disponible || 0;
+
+  this.egresosService.getCantidadDisponiblePorLote(egreso.cod_insumo, egreso.presentacion.cod_presentacion, event.value.cod_lote).subscribe({
+    next: (data) => {
+      egreso.cantidad_disponible = data.cantidad_disponible;
+      egreso.cantidad_ingresada = egreso.cantidad_disponible;
+      this.cdRef.detectChanges();
+    },
+    error: (err) => {
+      console.error('Error al obtener cantidad disponible por lote:', err);
+      egreso.cantidad_disponible = 0;
+      egreso.cantidad_ingresada = 0;
+      this.cdRef.detectChanges();
+    }
+  });
+
+  egreso.cantidad_disponible = event.value.cantidad_disponible || 0;
+  egreso.cantidad_ingresada = egreso.cantidad_disponible;
   this.cdRef.detectChanges();
 
   // Calculando los días restantes hasta la fecha de vencimiento del lote seleccionado
@@ -317,6 +333,7 @@ guardarTodosLosEgresos() {
         detail: 'Egresos guardados correctamente en la base de datos',
       });
       this.egresos = [this.crearFilaEditable()]; 
+      this.areaSeleccionada = null;
       
     },
     error: (err) => {
@@ -361,6 +378,8 @@ onGuardarEgreso(){
     return;
   }
 
+
+
   if (
     this.filaEditable.cantidad_ingresada === null ||
     this.filaEditable.cantidad_ingresada === undefined ||
@@ -372,6 +391,20 @@ onGuardarEgreso(){
       summary: 'Error',
       detail: 'Debe ingresar una cantidad válida mayor a cero.',
     });
+    return;
+  }
+
+  const cantidad = Number(this.filaEditable.cantidad_ingresada);
+  const disponible = Number(this.filaEditable.cantidad_disponible);
+  if (cantidad > disponible) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: `La cantidad a egresar no puede ser mayor a la cantidad disponible (${this.filaEditable.cantidad_disponible}).`,
+    });
+    // Resetear la cantidad a 0 o null para que el usuario corrija
+    this.filaEditable.cantidad_ingresada = disponible;
+    this.cdRef.detectChanges();
     return;
   }
 
@@ -397,6 +430,30 @@ getColorClase(fechaVencimiento: string | Date): string {
   } else {
     return 'bg-green-500';      // mayor a 6 meses → verde
   }
+}
+
+eliminarEgreso(index: number) {
+  this.confirmationService.confirm({
+    message: '¿Estás seguro de que deseas eliminar este egreso?',
+    header: 'Confirmar eliminación',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      this.egresos.splice(index, 1);
+      this.cdRef.detectChanges();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Eliminado',
+        detail: 'Egreso eliminado correctamente'
+      });
+    },
+    reject: () => {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Cancelado',
+        detail: 'No se eliminó el egreso'
+      });
+    }
+  });
 }
 
 justificarLote(){

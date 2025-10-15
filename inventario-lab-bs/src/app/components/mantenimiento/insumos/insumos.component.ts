@@ -11,6 +11,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ToastModule } from 'primeng/toast';   
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Dialog } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { RatingModule } from 'primeng/rating';
@@ -45,6 +46,7 @@ import { PresentacionService } from '../../../services/presentacion.service';
     FluidModule,
     DatePickerModule,
     AutoCompleteModule,
+    Dialog,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './insumos.component.html',
@@ -53,6 +55,8 @@ import { PresentacionService } from '../../../services/presentacion.service';
 export class InsumosComponent implements OnInit{
   insumos: any[] = [];
   expandedRows: { [key: string]: boolean } = {}; 
+  addPresentationModalVisible: boolean = false;
+  selectedInsumo: any = null;
 
   constructor(
     private insumosService: InsumoService, 
@@ -65,6 +69,11 @@ export class InsumosComponent implements OnInit{
   nombre: string = '';
   cant_min: number | null = null;
   cant_max: number | null = null;
+
+  // Variables para añadir presentación de insumo
+  newPresentacionCodigo: string = '';
+  newPresentacionDescripcion: string = '';
+  newPresentacionFormaDespacho: string = '';
 
   presentaciones: { codigo: string, descripcion: string, forma_despacho: string }[] = [];
 
@@ -162,7 +171,6 @@ export class InsumosComponent implements OnInit{
         cod_insumo: codInsumo,
         fecha_creacion: new Date()
       };
-3
       this.presentacionesService.createPresentacion(presentacionData).subscribe(response => {
         console.log('Presentación guardada con éxito', response);
       }, error => {
@@ -178,4 +186,35 @@ export class InsumosComponent implements OnInit{
   onRowCollapse(event: any) {
     this.expandedRows[event.data.cod_insumo] = false;
   }
+
+  showPresentationDialog(insumo: any) {
+    this.selectedInsumo = insumo;
+    this.addPresentationModalVisible = true;
+  }
+
+  agregarPresentacionAlInsumo() {
+    if (
+      !this.newPresentacionCodigo || 
+      !this.newPresentacionDescripcion || 
+      !this.newPresentacionFormaDespacho
+    ) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Todos los campos de la presentación deben estar completos' });
+      return;
+    }
+    const presentacionData = {
+      cod_presentacion: this.newPresentacionCodigo,  
+      nombre: this.newPresentacionDescripcion,
+      forma_despacho: this.newPresentacionFormaDespacho,
+      cod_insumo: this.selectedInsumo.cod_insumo,
+      fecha_creacion: new Date()
+    };
+    this.presentacionesService.createPresentacion(presentacionData).subscribe(response => {
+      console.log('Presentación guardada con éxito', response);
+      this.addPresentationModalVisible = false;
+      this.ngOnInit();
+    }, error => {
+      console.error('Error al guardar la presentación:', error);
+    }); 
+  }
+
 }

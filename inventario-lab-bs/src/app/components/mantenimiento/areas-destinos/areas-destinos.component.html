@@ -1,6 +1,7 @@
 
 <div class="card">
     <p-toast />
+    <p-confirmDialog></p-confirmDialog>
     <div class="md:w-full">
         <div class="card flex flex-col gap-4">
             <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
@@ -63,12 +64,12 @@
                 </td>
                 <td class="text-center acciones-botones">
                     <ng-container *ngIf="filaEditando === rowData; else normalButtons">
-                        <button pButton icon="pi pi-check" class="p-button-rounded p-button-success p-button-text mr-2" (click)="guardarEdicion(rowData)"></button>
+                        <button pButton icon="pi pi-check" class="p-button-rounded p-button-success p-button-text mr-2" (click)="onRowEditSave(rowData)"></button>
                         <button pButton icon="pi pi-times" class="p-button-rounded p-button-secondary p-button-text" (click)="cancelarEdicion(rowData)"></button>
                     </ng-container>
                     <ng-template #normalButtons>
                         <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text mr-2" (click)="editarFila(rowData)"></button>
-                        <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" (click)="eliminarFila(rowData)"></button>
+                        <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger" (click)="eliminarFila($event, rowData)"></button>
                     </ng-template>
               </td>
             </tr>

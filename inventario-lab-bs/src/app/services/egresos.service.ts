@@ -25,4 +25,8 @@ export class EgresosService {
   getLotesPorInsumoYPres(cod_insumo: number, cod_presentacion: number): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/lotes/${cod_insumo}/${cod_presentacion}`);
   }
+
+  getCantidadDisponiblePorLote(cod_insumo: number, cod_presentacion: number, cod_lote: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/lotes/${cod_insumo}/${cod_presentacion}/${cod_lote}`);
+  }
 }

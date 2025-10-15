@@ -1,0 +1,33 @@
+<div class="card">
+    <div class="flex justify-between items-center mb-4">
+    <div class="font-semibold text-xl">Lotes próximos a vencer</div>
+    <p-button 
+      label="Trasladar insumos" 
+      severity="info" 
+      rounded
+      (click)="irAEgresos()"
+      >
+    </p-button>
+  </div>
+<ul class="list-none p-0 m-0">
+  <li *ngFor="let lote of lotesPorVencer" class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+    <div>
+      <!-- Título: cod_insumo - insumo -->
+      <span class="text-surface-900 dark:text-surface-0 font-medium mr-2 mb-1 md:mb-0">
+        {{ lote.cod_insumo }} - {{ lote.nombre_insumo }} - {{ lote.presentacion }}
+      </span>
+      <!-- Subtítulo: Lote -->
+      <div class="mt-1 text-muted-color">
+        Lote: {{ lote.cod_lote }}
+      </div>
+    </div>
+
+    <!-- Derecha: Fecha vencimiento -->
+    <div class="mt-2 md:mt-0 flex items-center">
+      <span class="text-orange-500 ml-4 font-medium">
+        {{ lote.fecha_vencimiento | date:'dd/MM/yyyy' }}
+      </span>
+    </div>
+  </li>
+</ul>
+</div>

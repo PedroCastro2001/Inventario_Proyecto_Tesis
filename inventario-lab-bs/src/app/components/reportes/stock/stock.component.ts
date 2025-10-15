@@ -78,7 +78,7 @@ export class KardexPrincipalComponent implements OnInit {
     });
   }
 
-  onGlobalFilter(event: Event, table: Table) {
+onGlobalFilter(event: Event, table: Table) {
   const input = event.target as HTMLInputElement;
   table.filterGlobal(input.value, 'contains');
 }
@@ -90,6 +90,19 @@ getFilasConCantidadASolicitar(){
 imprimir() {
   const filasFiltradas = this.getFilasConCantidadASolicitar();
 
+  if (!filasFiltradas || filasFiltradas.length === 0) {
+    alert('No hay datos para imprimir.');
+    return;
+  }
+
+  // Agrupar por código + nombre de insumo
+  const grupos: Record<string, typeof filasFiltradas> = {};
+  filasFiltradas.forEach(item => {
+    const key = `${item.cod_insumo}|${item.insumo}`;
+    if (!grupos[key]) grupos[key] = [];
+    grupos[key].push(item);
+  });
+
   let ventana = window.open('', '_blank');
   if (!ventana) return;
 
@@ -98,9 +111,65 @@ imprimir() {
       <head>
         <title>Imprimir resumen de stock</title>
         <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+          }
+
+          .encabezado {
+            width: 100%;
+            margin-bottom: 20px;
+          }
+
+          .linea {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+          }
+
+          .linea-izquierda img {
+            width: 80px;
+          }
+
+          .linea-centro {
+            text-align: center;
+            flex: 1;
+          }
+
+          .linea-centro .hospital {
+            font-weight: bold;
+            font-size: 18px;
+          }
+
+          .linea-centro .anexo {
+            font-weight: bold;
+            font-size: 14px;
+          }
+
+          .linea-centro .control {
+            font-weight: normal;
+            font-size: 12px;
+          }
+
+          .linea-derecha {
+            text-align: right;
+            font-size: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+          }
+
+          .linea-derecha div {
+            display: flex;
+            gap: 5px;
+          }
+
           table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 12px;
           }
           th, td {
             border: 1px solid #ccc;
@@ -116,7 +185,24 @@ imprimir() {
         </style>
       </head>
       <body>
-        <h2>Solicitud de pedido para stock (Anexo 3)</h2>
+       <div class="encabezado">
+          <div class="linea">
+            <div class="linea-izquierda">
+              <img  src="https://pbs.twimg.com/profile_images/1085895369873997824/jbNZ9Fr2_400x400.png" alt="Mi Logo" alt="Logo" />
+            </div>
+            <div class="linea-centro">
+              <div class="hospital">HOSPITAL NACIONAL DE ESPECIALIDADES QUIRÚRGICAS DE VILLA NUEVA</div>
+              <div class="anexo">ANEXO 3</div>
+              <div class="control">Solicitud de pedido para Stock</div>
+            </div>
+            <div class="linea-derecha">
+              <div><strong>CÓDIGO:</strong> _________</div>
+              <div><strong>VIGENCIA:</strong> _________</div>
+              <div><strong>EDICIÓN:</strong> _________</div>
+            </div>
+          </div>
+        </div>
+
         <table>
           <thead>
             <tr>
@@ -128,15 +214,17 @@ imprimir() {
             </tr>
           </thead>
           <tbody>
-            ${filasFiltradas.map(item => `
-              <tr>
-                <td>${item.cod_insumo}</td>
-                <td>${item.insumo}</td>
-                <td>${item.presentacion}</td>
-                <td>${item.existencia_actual}</td>
-                <td>${item.cantidad_a_solicitar}</td>
-              </tr>
-            `).join('')}
+            ${Object.values(grupos).map(grupo => 
+              grupo.map((item, index) => `
+                <tr>
+                  ${index === 0 ? `<td rowspan="${grupo.length}">${item.cod_insumo}</td>` : ''}
+                  ${index === 0 ? `<td rowspan="${grupo.length}">${item.insumo}</td>` : ''}
+                  <td>${item.presentacion}</td>
+                  <td>${item.existencia_actual}</td>
+                  <td>${item.cantidad_a_solicitar}</td>
+                </tr>
+              `).join('')
+            ).join('')}
           </tbody>
         </table>
       </body>

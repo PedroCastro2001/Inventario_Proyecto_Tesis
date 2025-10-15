@@ -154,16 +154,73 @@ export const getLotesPorInsumoYPresentacion = async (req, res) => {
 
     try {
         const [rows] = await pool.query(
-            `SELECT cod_lote, fecha_vencimiento, 
-                    SUM(cantidad_ingresada) AS cantidad_disponible
-             FROM ingreso
-             WHERE cod_insumo = ? AND cod_presentacion = ?
-             GROUP BY cod_lote, fecha_vencimiento`,
+            `
+            SELECT 
+                i.cod_lote,
+                i.fecha_vencimiento,
+                SUM(i.cantidad_ingresada) - COALESCE(SUM(e.cantidad), 0) AS cantidad_disponible
+            FROM ingreso i
+            LEFT JOIN egreso e 
+                ON i.cod_insumo = e.cod_insumo
+                AND i.cod_presentacion = e.cod_presentacion
+                AND i.cod_lote = e.cod_lote
+            WHERE i.cod_insumo = ? 
+              AND i.cod_presentacion = ?
+              AND i.fecha_vencimiento >= CURDATE()
+            GROUP BY i.cod_lote, i.fecha_vencimiento
+            HAVING cantidad_disponible > 0
+            ORDER BY i.fecha_vencimiento ASC
+            `,
             [cod_insumo, cod_presentacion]
         );
 
         res.json(rows);
     } catch (error) {
         return res.status(500).json({ message: 'Error al obtener los lotes', error: error.message });
+    }
+};
+
+export const getCantidadDisponiblePorLote = async (req, res) => {
+    const { cod_insumo, cod_presentacion, cod_lote } = req.params;
+
+    try {
+        const [rows] = await pool.query(
+            `
+            SELECT 
+                i.cod_insumo,
+                i.cod_presentacion,
+                i.cod_lote,
+                COALESCE(ingresos.total_ingresado, 0) AS total_ingresado,
+                COALESCE(egresos.total_egresado, 0) AS total_egresado,
+                COALESCE(ingresos.total_ingresado, 0) - COALESCE(egresos.total_egresado, 0) AS cantidad_disponible
+            FROM ingreso i
+            LEFT JOIN (
+                SELECT cod_insumo, cod_presentacion, cod_lote, SUM(cantidad_ingresada) AS total_ingresado
+                FROM ingreso
+                GROUP BY cod_insumo, cod_presentacion, cod_lote
+            ) ingresos ON i.cod_insumo = ingresos.cod_insumo 
+                      AND i.cod_presentacion = ingresos.cod_presentacion
+                      AND i.cod_lote = ingresos.cod_lote
+            LEFT JOIN (
+                SELECT cod_insumo, cod_presentacion, cod_lote, SUM(cantidad) AS total_egresado
+                FROM egreso
+                GROUP BY cod_insumo, cod_presentacion, cod_lote
+            ) egresos ON i.cod_insumo = egresos.cod_insumo 
+                      AND i.cod_presentacion = egresos.cod_presentacion
+                      AND i.cod_lote = egresos.cod_lote
+            WHERE i.cod_insumo = ? AND i.cod_presentacion = ? AND i.cod_lote = ?
+            GROUP BY i.cod_insumo, i.cod_presentacion, i.cod_lote, ingresos.total_ingresado, egresos.total_egresado
+            `,
+            [cod_insumo, cod_presentacion, cod_lote]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Lote no encontrado' });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error("Error en getCantidadDisponiblePorLote:", error);
+        return res.status(500).json({ message: 'Error al obtener la cantidad disponible', error: error.message });
     }
 };

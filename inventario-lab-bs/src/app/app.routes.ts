@@ -9,6 +9,7 @@ import { AreasDestinosComponent } from './components/mantenimiento/areas-destino
 import { EgresosComponent } from './components/transacciones/egresos/egresos.component';
 import { KardexPrincipalComponent } from './components/reportes/stock/stock.component';
 import { ExistenciasConsumosComponent } from './components/reportes/existencias-consumos/existencias-consumos.component';
+import { BalanceComponent } from './components/reportes/balance/balance.component';
 import { HistorialComponent } from './components/historial/historial.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -32,6 +33,7 @@ export const routes: Routes = [
             { path: 'ubicaciones', component: AreasDestinosComponent },
             { path: 'reportes/stockPrincipal', component: KardexPrincipalComponent },
             { path: 'reportes/existenciasConsumos', component: ExistenciasConsumosComponent },
+            { path: 'reportes/balanceStock', component: BalanceComponent },
         ]
     },
     { path: '**', redirectTo: 'login'}

@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Card } from 'primeng/card';
+import {CardModule} from 'primeng/card';
+import { InsumosPorAgotarseComponent } from './components/insumos-por-agotarse/insumos-por-agotarse.component';
+import { LotesPorVencerComponent } from './components/lotes-por-vencer/lotes-por-vencer.component';
+import { InsumosAgotadosVencidosComponent } from './components/insumos-agotados-vencidos/insumos-agotados-vencidos.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    Card
+    InsumosPorAgotarseComponent,
+    LotesPorVencerComponent,
+    InsumosAgotadosVencidosComponent,
+    CardModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'

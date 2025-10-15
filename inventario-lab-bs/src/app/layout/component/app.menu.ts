@@ -79,9 +79,9 @@ export class AppMenu {
                                 routerLink: ['/reportes/stockPrincipal']
                             },
                             {
-                                label: 'Existencias y Consumos',
-                                icon: 'pi pi-chart-line',
-                                routerLink: ['/reportes/existenciasConsumos']
+                                label: 'Balance de Stock',
+                                icon: 'pi pi-table',
+                                routerLink: ['/reportes/balanceStock']
                             },
                         ]
                     }

@@ -163,7 +163,7 @@
                     <span>{{ filaEditable.fecha_vencimiento | date:'dd/MM/yyyy' }}</span>
                 </td>
                 <td>
-                    <input pInputText [(ngModel)]="filaEditable.cantidad_ingresada" />
+                    <input pInputText [(ngModel)]="filaEditable.cantidad_ingresada"  />
                 </td>
                 <td><input pInputText [(ngModel)]="filaEditable.observaciones" /></td>
                 <td class="text-center">
@@ -322,7 +322,7 @@
                     [outlined]="true" 
                     (click)="onRowEditSave(egreso, ri)"
                     />
-                    <p-button 
+                    <!--<p-button 
                     *ngIf="egreso.editing"
                     pButton
                     pRipple
@@ -334,13 +334,14 @@
                     [rounded]="true" 
                     [outlined]="true" 
                     (click)="onRowEditCancel(egreso, ri)"
-                    />
+                    /> -->
                     <p-button 
                     *ngIf="!egreso.editing"
                     icon="pi pi-trash" 
                     severity="danger" 
                     [rounded]="true" 
                     [outlined]="true"  
+                    (click)="eliminarEgreso(ri)"
                     />
               </td>
             </tr>

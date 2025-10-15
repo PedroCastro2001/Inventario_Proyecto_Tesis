@@ -1,0 +1,45 @@
+<div class="card !mb-8">
+  <!-- Contenedor del título y botón -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="font-semibold text-xl">Insumos con pocas existencias</div>
+    <p-button 
+      label="Ver stock de insumos" 
+      severity="info" 
+      rounded
+      (click)="irAStockInsumo()"
+      >
+    </p-button>
+  </div>
+
+  <p-table  
+      #dt
+      [value]="insumosPorAgotarse"
+      rowGroupMode="rowspan" 
+      groupRowsBy="cod_insumo" 
+      [paginator]="true" 
+      [rows]="5" 
+      responsiveLayout="scroll">
+      <ng-template #header>
+          <tr>
+              <th>Código Insumo</th>
+              <th>Nombre Insumo</th>
+              <th>Presentación</th>
+              <th>Existencia</th>
+              <th>Cantidad mínima</th>
+          </tr>
+      </ng-template>
+      <ng-template #body let-item let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan" >
+      <tr>
+          <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+          {{ item.cod_insumo }}
+          </td>
+          <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+              {{ item.insumo }}
+          </td>
+          <td>{{ item.presentacion }}</td>
+          <td>{{ item.existencia_actual }}</td>
+          <td>{{ item.cant_min }}</td>
+      </tr>
+      </ng-template>
+  </p-table>
+</div>

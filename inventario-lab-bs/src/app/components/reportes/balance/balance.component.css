@@ -1,0 +1,8 @@
+    /* Example for a group with a specific class */
+    .my-row-group tr:nth-child(even) {
+        background-color: #f2f2f2; /* Light gray for even rows */
+    }
+
+    .my-row-group tr:nth-child(odd) {
+        background-color: #f88; /* White for odd rows */
+    }

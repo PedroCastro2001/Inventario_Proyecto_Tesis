@@ -1,0 +1,126 @@
+  <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+    <div class="card mb-0">
+        <div class="flex justify-between mb-4">
+            <div>
+                <span class="block text-muted-color font-medium mb-4">Insumos agotados</span>
+                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ cantidadAgotados }}</div>
+            </div>
+            <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                <i class="pi pi-exclamation-triangle text-blue-500 !text-xl"></i>
+            </div>
+        </div>
+        <span 
+            class="text-primary font-medium cursor-pointer hover:underline"
+            (click)="mostrarInsumosAgotados($event, opInsumos)"
+            >
+            Ver
+        </span>
+    </div>
+        <p-popover #opInsumos [style]="{ width: '450px' }" [appendTo]="'body'">
+        <p-table
+            [value]="insumosAgotados"
+            [rows]="5"
+            [paginator]="true"
+            dataKey="id"
+            selectionMode="single"
+            [(selection)]="insumoSeleccionado"
+        >
+            <ng-template #header>
+            <tr>
+                <th>Código</th>
+                <th>Insumo</th>
+                <th>Presentación</th>
+            </tr>
+            </ng-template>
+            <ng-template #body let-insumo>
+            <tr>
+                <td>{{ insumo.cod_insumo }}</td>
+                <td>{{ insumo.nombre_insumo }}</td>
+                <td>{{ insumo.presentacion }}</td>
+            </tr>
+            </ng-template>
+        </p-table>
+    </p-popover>
+  </div>
+  <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+    <div class="card mb-0">
+        <div class="flex justify-between mb-4">
+            <div>
+                <span class="block text-muted-color font-medium mb-4">Lotes vencidos</span>
+                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ cantidadLotesVencidos }}</div>
+            </div>
+            <div class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                <i class="pi pi-box text-orange-500 !text-xl"></i>
+            </div>
+        </div>
+        <span 
+            class="text-primary font-medium cursor-pointer hover:underline"
+            (click)="mostrarLotesVencidos($event, opLotes)"
+            >
+            Ver
+        </span>
+    </div>
+    <p-popover #opLotes [style]="{ width: '450px' }" [appendTo]="'body'">
+        <p-table
+            [value]="lotesVencidos"
+            [rows]="5"
+            [paginator]="true"
+            dataKey="id"
+            selectionMode="single"
+            [(selection)]="loteSeleccionado"
+        >
+            <ng-template #header>
+            <tr>
+                <th>Lote</th>
+                <th>Insumo</th>
+                <th>Fecha Vencimiento</th>
+            </tr>
+            </ng-template>
+            <ng-template #body let-lote>
+            <tr>
+                <td>{{ lote.cod_lote }}</td>
+                <td>{{ lote.cod_insumo }} - {{ lote.nombre_insumo }} {{ lote.presentacion }}</td>
+                <td>{{ lote.fecha_vencimiento |  date: 'dd/MM/yyyy' }}</td>
+            </tr>
+            </ng-template>
+        </p-table>
+    </p-popover>
+  </div>
+  <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+    <div class="card mb-0">
+        <div class="flex justify-between mb-4">
+            <div>
+                <span class="block text-muted-color font-medium mb-4">Requisiciones pendientes</span>
+                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ cantidadRequisicionesTemporales }}</div>
+            </div>
+            <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                <i class="pi pi-file-excel text-cyan-500 !text-xl"></i>
+            </div>
+        </div>
+        <span 
+            class="text-primary font-medium cursor-pointer hover:underline"
+            (click)="irARequisicionesTemporales()"
+            >
+            Ver
+        </span>
+    </div>
+  </div>
+  <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+    <div class="card mb-0">
+        <div class="flex justify-between mb-4">
+            <div>
+                <span class="block text-muted-color font-medium mb-4">Movimientos de hoy</span>
+                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ totalTransaccionesHoy }}</div>
+            </div>
+            <div class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                <i class="pi pi-history text-purple-500 !text-xl"></i>
+            </div>
+        </div>
+        <span 
+            class="text-primary font-medium cursor-pointer hover:underline"
+            (click)="irAHistorialMovimientos()"
+            >
+            Ver Movimientos
+        </span>
+    </div>
+  </div>

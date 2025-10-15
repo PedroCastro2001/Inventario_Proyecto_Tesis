@@ -339,6 +339,7 @@ export class IngresosComponent implements OnInit{
           detail: 'Ingresos guardados correctamente en la base de datos',
         });
         this.ingresos = [this.crearFilaEditable()];
+        this.no_requisicion = '';
         
       },
       error: (err) => {
@@ -453,6 +454,30 @@ guardarIngreso(){
     }, error => {
         console.error('Error al guardar el ingreso:', error);
     });
+}
+
+eliminarIngreso(index: number) {
+  this.confirmationService.confirm({
+    message: '¿Estás seguro de que deseas eliminar este ingreso?',
+    header: 'Confirmar eliminación',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      this.ingresos.splice(index, 1);
+      this.cdRef.detectChanges();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Eliminado',
+        detail: 'Ingreso eliminado correctamente'
+      });
+    },
+    reject: () => {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Cancelado',
+        detail: 'No se eliminó el ingreso'
+      });
+    }
+  });
 }
 
 actualizarDemandaInsatisfecha(fila: any) {

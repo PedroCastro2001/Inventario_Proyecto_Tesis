@@ -1,0 +1,124 @@
+<div class="card">
+    <div class="md:w-full">
+        <div class="card flex flex-col gap-4">
+            <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
+                Balance
+            </h1>
+            <div class="grid grid-cols-12 gap-4 mb-4">
+                <div class="col-span-12 md:col-span-3 flex flex-col">
+                    <label for="fechaInicio" class="mb-1">Desde:</label>
+                    <p-datepicker
+                    [(ngModel)]="desdeFecha"
+                    [showIcon]="true"
+                    iconDisplay="input"
+                    dateFormat="dd/mm/yy"
+                    inputId="desdeFecha"
+                    appendTo="body"
+                    class="w-full"
+                    ></p-datepicker>
+                </div>
+
+                <div class="col-span-12 md:col-span-3 flex flex-col">
+                    <label for="fechaFin" class="mb-1">Hasta:</label>
+                    <p-datepicker
+                    [(ngModel)]="hastaFecha"
+                    [showIcon]="true"
+                    iconDisplay="input"
+                    dateFormat="dd/mm/yy"
+                    inputId="hastaFecha"
+                    appendTo="body"
+                    class="w-full"
+                    ></p-datepicker>
+                </div>
+
+                <div class="col-span-12 md:col-span-3 flex items-end gap-2">
+                    <p-button 
+                        label="Consultar" 
+                        icon="pi pi-search"
+                        severity="info"
+                        (click)="consultarBalance()"
+                        rounded 
+                    />
+                    <p-button 
+                        label="Imprimir" 
+                        icon="pi pi-print"
+                        severity="secondary"
+                        (click)="imprimirBalance()"
+                        rounded />
+                    </div>
+            </div>
+        </div>
+    </div>
+    <p-table 
+        #dt2
+        strippedRows
+        [value]="balanceData" 
+        rowGroupMode="rowspan" 
+        groupRowsBy="cod_insumo" 
+        sortField="cod_insumo" 
+        sortMode="single" 
+        [paginator]="true"
+        [rows]="20"
+        [rowsPerPageOptions]="[20, 40, 50]"
+        [globalFilterFields]="['cod_insumo', 'insumo']"
+        [tableStyle]="{ 'min-width': '75rem' }">
+        <ng-template #caption>
+            <div class="flex">
+            <p-iconfield iconPosition="left" class="ml-auto">
+                <p-inputicon>
+                    <i class="pi pi-search"></i>
+                </p-inputicon>
+                <input 
+                pInputText 
+                type="text" 
+                (input)="onGlobalFilter($event, dt2)" 
+                placeholder="Buscar por código o insumo" />
+            </p-iconfield>
+        </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th>Código Insumo</th>
+                <th>Insumo</th>
+                <th>Presentación</th>
+                <th>Tipo</th>
+                <th>No requisición</th>
+                <th>Fecha transacción</th>
+                <th>Cantidad</th>
+                <th>Fecha vencimiento</th>
+                <th>Lote</th>
+                <th>Saldo</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-item let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan" >
+            <tr>
+                <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                {{ item.cod_insumo }}
+                </td>
+                <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                    {{ item.insumo }}
+                </td>
+                <td *ngIf="isFirstOfPresentation(rowIndex)" 
+                    [attr.rowspan]="getPresentationRowspan(item)">
+                    {{ item.presentacion || '-' }}
+                </td>
+                <td>
+                    <p-tag 
+                        [value]="item.tipo" 
+                        [severity]="
+                            item.tipo === 'Ingreso' ? 'success' : 
+                            item.tipo === 'Egreso' ? 'warn' : 
+                            item.tipo === 'Saldo inicial' ? 'info' : 'secondary'
+                        ">
+                    </p-tag>
+                </td>
+                <td>{{ item.no_requisicion || '-' }}</td>
+                <td>{{ item.fecha_transaccion ? (item.fecha_transaccion | date:'dd/MM/yy HH:mm') : '-' }}</td>
+                <td>{{ item.cantidad != null ? item.cantidad : '-' }}</td>
+                <td>{{ item.fecha_vencimiento ? (item.fecha_vencimiento | date:'dd/MM/yyyy') : '-' }}</td>
+                <td>{{ item.lote || '-' }}</td>
+                <td>{{ item.saldo != null ? item.saldo : '-' }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

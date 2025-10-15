@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from 'cors';
 import indexRoutes from "./routes/index.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
 import insumosRoutes from "./routes/insumos.routes.js";
 import areaRoutes from "./routes/area.routes.js";
 import presentacionesRoutes from "./routes/presentaciones.routes.js";
@@ -37,6 +38,7 @@ app.use(cors({
 // Routes
 app.use("/", indexRoutes);
 app.use("/api", authRoutes);
+app.use("/api", dashboardRoutes);
 app.use("/api", insumosRoutes);
 app.use("/api", areaRoutes);
 app.use("/api", presentacionesRoutes);

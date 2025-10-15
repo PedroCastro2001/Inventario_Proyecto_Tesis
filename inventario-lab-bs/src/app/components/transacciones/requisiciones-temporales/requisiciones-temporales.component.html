@@ -59,7 +59,7 @@
                     <span>{{ reqTemporal.cantidad_ingresos }}</span>
                 </td>
                 <td>
-                    <span>{{ reqTemporal.fecha }}</span>
+                    <span>{{ reqTemporal.fecha | date: 'dd/MM/yyyy' }}</span>
                 </td>
                 <td class="text-center acciones-botones">
                     <ng-container *ngIf="filaEditando === reqTemporal; else normalButtons">

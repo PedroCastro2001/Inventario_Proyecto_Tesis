@@ -343,7 +343,7 @@
                     [outlined]="true" 
                     (click)="onRowEditSave(ingreso, ri)"
                     />
-                    <p-button 
+                    <!--<p-button 
                     *ngIf="ingreso.editing"
                     pButton
                     pRipple
@@ -355,13 +355,14 @@
                     [rounded]="true" 
                     [outlined]="true" 
                     (click)="onRowEditCancel(ingreso, ri)"
-                    />
+                    /> -->
                     <p-button 
                     *ngIf="!ingreso.editing"
                     icon="pi pi-trash" 
                     severity="danger" 
                     [rounded]="true" 
                     [outlined]="true"  
+                    (click)="eliminarIngreso(ri)"
                     />
               </td>
             </tr>
