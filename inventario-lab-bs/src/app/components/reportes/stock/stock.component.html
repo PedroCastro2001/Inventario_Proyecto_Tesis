@@ -6,7 +6,7 @@
             </h1>
             <div class="grid grid-cols-12 gap-4 items-center">
                 <label for="hastaFecha" class="col-span-2 text-right">Hasta:</label>
-                <div class="col-span-4">
+                <div class="col-span-12 md:col-span-10 flex flex-wrap md:flex-nowrap items-center gap-2">
                   <p-datepicker
                     [(ngModel)]="hastaFecha"
                     [showIcon]="true"
@@ -14,23 +14,28 @@
                     dateFormat="dd/mm/yy"
                     inputId="hastaFecha"
                     appendTo="body"
-                    class="w-full"
+                    class="w-full md:w-auto"
                   ></p-datepicker>
+                   <p-button 
+                    label="Consultar" 
+                    icon="pi pi-search"
+                    severity="info"
+                    (click)="consultarResumenStock()"
+                    rounded />
+                    <p-button 
+                    label="Imprimir solicitud de pedido" 
+                    icon="pi pi-print"
+                    severity="secondary"
+                    (click)="imprimir()"
+                    rounded />
+                    <p-button 
+                        label="Imprimir existencias"
+                        icon="pi pi-print"
+                        severity="secondary"
+                        (click)="imprimirExistencias()"
+                        rounded
+                    />
                 </div>
-              </div>
-              <div class="col-span-12 md:col-span-3 flex justify-end gap-2">
-                <p-button 
-                label="Consultar" 
-                icon="pi pi-search"
-                severity="info"
-                (click)="consultarResumenStock()"
-                rounded />
-                <p-button 
-                label="Imprimir" 
-                icon="pi pi-print"
-                severity="secondary"
-                (click)="imprimir()"
-                rounded />
             </div>
         </div>
     </div>
@@ -41,6 +46,9 @@
         groupRowsBy="cod_insumo" 
         sortField="cod_insumo" 
         sortMode="single" 
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]"
         [globalFilterFields]="['cod_insumo', 'insumo']"
         [tableStyle]="{ 'min-width': '75rem' }">
         <ng-template #caption>

@@ -1,8 +1,11 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
+import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 
+const SECRET_KEY = process.env.JWT_SECRET || 'hospitalvn';
+
 export const createUser = async (req, res) => {
-    const { full_name, username, password, rol } = req.body;
+    const { full_name, username, password, rol, contexto } = req.body;
 
     if (!username || !password || !rol)
         return res.status(400).json({ error: 'Faltan datos' });
@@ -10,7 +13,8 @@ export const createUser = async (req, res) => {
     try {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-
+    
+        const pool = getPool(contexto);
         await pool.execute(
             'INSERT INTO usuario (nombre_usuario, nombre_completo, contrasena, rol) VALUES (?, ?, ?, ?)',
             [username, full_name, hashedPassword, rol]
@@ -25,12 +29,13 @@ export const createUser = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, contexto } = req.body;
 
     if (!username || !password)
         return res.status(400).json({ error: 'Faltan credenciales' });
 
     try {
+        const pool = getPool(contexto);
         const [rows] = await pool.execute('SELECT * FROM usuario WHERE nombre_usuario = ?', [username]);
 
         if (rows.length === 0) {
@@ -45,43 +50,44 @@ export const login = async (req, res) => {
         }
 
         let idSesion;
-
         if (user.rol === 'Administrador') {
             const [result] = await pool.execute(
                 'INSERT INTO sesion (id_usuario, nombre_real, fecha_inicio) VALUES (?, ?, NOW())',
                 [user.id_usuario, user.nombre_completo]
             );
-        
             idSesion = result.insertId;
-        
         } else if (user.rol === 'Invitado') {
             const [result] = await pool.execute(
                 'INSERT INTO sesion (id_usuario, fecha_inicio ) VALUES (?, NOW())',
                 [user.id_usuario]
             );
-        
             idSesion = result.insertId;
         }
 
-        /*req.session.user = {
+        // Crear token JWT
+        const token = jwt.sign(
+        {
             id: user.id_usuario,
             username: user.nombre_usuario,
-            full_name: user.rol === "Administrador" ? user.nombre_completo : null, 
             rol: user.rol,
-            id_sesion: idSesion
-        };*/
-        
+            id_sesion: idSesion,
+            contexto,
+        },
+        SECRET_KEY,
+        { expiresIn: '2h' }
+        );
 
         res.json({
             message: 'Login exitoso',
+            token,
             usuario: {
                 id: user.id_usuario,
                 username: user.nombre_usuario,
                 full_name: user.rol === "Administrador" ? user.nombre_completo : null, 
                 rol: user.rol,
-                id_sesion: idSesion
+                id_sesion: idSesion,
+                contexto
             }
-            //usuario: req.session.user
         });
 
     } catch (err) {
@@ -112,7 +118,7 @@ export const logout = (req, res) => {
 };
 
 export const registrarNombreInvitado = async (req, res) => {
-    const { nombre_real, id_sesion } = req.body;
+    const { nombre_real, id_sesion, contexto } = req.body;
 
     console.log('Datos recibidos:', req.body); 
 
@@ -125,6 +131,7 @@ export const registrarNombreInvitado = async (req, res) => {
             return res.status(400).json({ error: 'Faltan parámetros' }); 
         }
 
+        const pool = getPool(contexto);
         await pool.execute(
             'UPDATE sesion SET nombre_real = ? WHERE id_sesion = ?',
             [nombre_real, id_sesion]

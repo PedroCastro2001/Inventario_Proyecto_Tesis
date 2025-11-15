@@ -11,6 +11,7 @@ import egresosRoutes from "./routes/egresos.routes.js";
 import stockRoutes from "./routes/stock.routes.js";
 import historialRoutes from "./routes/historial.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import usuariosRoutes from "./routes/usuarios.routes.js"
 import session from "express-session";
 
 const app = express();
@@ -46,6 +47,17 @@ app.use("/api", ingresosRoutes);
 app.use("/api", egresosRoutes);
 app.use("/api", stockRoutes);
 app.use("/api", historialRoutes);
+app.use("/api", usuariosRoutes)
+
+app.use((err, req, res, next) => {
+  if (err.name === "UnauthorizedError") {
+    return res.status(401).json({ message: "Token no válido o expirado" });
+  }
+  if (err.name === "ForbiddenError") {
+    return res.status(403).json({ message: "Acceso denegado" });
+  }
+  next(err);
+});
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "Not found" });

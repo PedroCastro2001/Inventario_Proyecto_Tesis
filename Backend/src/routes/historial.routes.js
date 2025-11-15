@@ -1,12 +1,11 @@
 import { Router } from "express";
-
+import { verificarToken } from "../middlewares/requireLogin.js";
 import {
     getHistorialMovimientos,
 } from "../controllers/historial.controller.js";
-import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
 
-router.get("/historial", getHistorialMovimientos);
+router.get("/historial", verificarToken, getHistorialMovimientos);
 
 export default router;

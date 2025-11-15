@@ -1,0 +1,245 @@
+<p-dialog
+  header="Cambiar contraseña"
+  [(visible)]="mostrarDialogoContrasena"
+  [modal]="true"
+  [style]="{ width: '28rem' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="formContrasena" (ngSubmit)="cambiarContrasena()">
+    <div class="flex flex-col gap-4">
+      <div>
+        <label class="font-semibold block mb-2">Nueva contraseña</label>
+        <p-inputgroup>
+          <input
+            pInputText
+            [type]="mostrarNueva ? 'text' : 'password'"
+            formControlName="nueva_contrasena"
+            placeholder="Ingrese la nueva contraseña"
+            class="w-full"
+          />
+          <button
+            pButton
+            type="button"
+            icon="{{ mostrarNueva ? 'pi pi-eye-slash' : 'pi pi-eye' }}"
+            (click)="toggleNueva()"
+            class="p-button-text"
+          ></button>
+        </p-inputgroup>
+      </div>
+
+      <div>
+        <label class="font-semibold block mb-2">Confirmar nueva contraseña</label>
+        <p-inputgroup>
+          <input
+            pInputText
+            [type]="mostrarConfirmar ? 'text' : 'password'"
+            formControlName="confirmar_contrasena"
+            placeholder="Confirme la nueva contraseña"
+            class="w-full"
+          />
+          <button
+            pButton
+            type="button"
+            icon="{{ mostrarConfirmar ? 'pi pi-eye-slash' : 'pi pi-eye' }}"
+            (click)="toggleConfirmar()"
+            class="p-button-text"
+          ></button>
+        </p-inputgroup>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 mt-4">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="cerrarDialogoContrasena()"
+      />
+      <p-button
+        label="Guardar"
+        icon="pi pi-check"
+        type="submit"
+        severity="success"
+        [disabled]="formContrasena.invalid"
+      />
+    </div>
+  </form>
+</p-dialog>
+<p-dialog 
+  header="Crear nuevo usuario" 
+  [(visible)]="mostrarDialogo" 
+  [modal]="true" 
+  [style]="{ width: '30rem' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="formUsuario" (ngSubmit)="guardarUsuario()">
+    <div class="flex flex-col gap-4">
+      <div>
+        <label class="font-semibold block mb-2">Nombre de usuario</label>
+        <input 
+          pInputText 
+          formControlName="nombre_usuario" 
+          placeholder="Ingrese el nombre" 
+          class="w-full" 
+        />
+      </div>
+
+      <div>
+        <label class="font-semibold block mb-2">Rol</label>
+        <p-dropdown 
+          formControlName="rol" 
+          [options]="roles"
+          optionLabel="label" 
+          optionValue="value"
+          placeholder="Seleccione un rol"
+          class="w-full"
+        ></p-dropdown>
+      </div>
+
+      <div *ngIf="formUsuario.get('rol')?.value === 'Administrador'">
+        <label class="font-semibold block mb-2">Nombre completo</label>
+        <input 
+            pInputText 
+            formControlName="nombre_completo" 
+            placeholder="Ingrese el nombre completo" 
+            class="w-full"
+        />
+        <small 
+            class="p-error block mt-1" 
+            *ngIf="formUsuario.get('nombre_completo')?.hasError('required') && formUsuario.get('nombre_completo')?.touched"
+        >
+            El nombre completo es obligatorio para administradores.
+        </small>
+      </div>
+
+      <div>
+        <label class="font-semibold block mb-2">Contraseña</label>
+        <p-inputgroup>
+            <input 
+                pInputText 
+                [type]="mostrarPassword ? 'text' : 'password'" 
+                formControlName="contrasena"
+                placeholder="Ingrese la contraseña"
+                class="w-full"
+            />
+            <button 
+                pButton 
+                type="button" 
+                icon="{{ mostrarPassword ? 'pi pi-eye-slash' : 'pi pi-eye' }}"
+                (click)="togglePassword()"
+                class="p-button-text"
+            ></button>
+            </p-inputgroup>
+        <small
+            class="p-error block mt-1"
+            *ngIf="formUsuario.get('contrasena')?.hasError('minlength') && formUsuario.get('contrasena')?.touched"
+        >
+            La contraseña debe tener al menos 5 caracteres.
+        </small>
+      </div>
+
+      <div>
+        <label class="font-semibold block mb-2">Confirmar contraseña</label>
+        <p-inputgroup>
+            <input 
+                pInputText 
+                [type]="mostrarConfirmacion ? 'text' : 'password'" 
+                formControlName="confirmarContrasena"
+                placeholder="Repita la contraseña"
+                class="w-full"
+            />
+            <button 
+                pButton 
+                type="button" 
+                icon="{{ mostrarConfirmacion ? 'pi pi-eye-slash' : 'pi pi-eye' }}"
+                (click)="toggleConfirmacion()"
+                class="p-button-text"
+            ></button>
+            </p-inputgroup>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 mt-4">
+      <p-button 
+        label="Cancelar" 
+        icon="pi pi-times" 
+        severity="secondary" 
+        (onClick)="cerrarDialogo()"
+      />
+      <p-button 
+        label="Guardar" 
+        icon="pi pi-check" 
+        type="submit" 
+        severity="success" 
+        [disabled]="formUsuario.invalid"
+      />
+    </div>
+  </form>
+</p-dialog>
+<div class="card">
+    <p-toast />
+    <p-confirmDialog></p-confirmDialog>
+    <div class="md:w-full">
+        <div class="card flex flex-col gap-4">
+            <h1 class="text-4xl font-extrabold text-sky-700 leading-tight">
+                Gestión de Usuarios
+            </h1>
+            <div class="col-span-12 md:col-span-3 flex justify-end">
+                <p-button 
+                label="Crear usuario" 
+                icon="pi pi-user-plus"
+                severity="info"
+                (click)="abrirDialogo()"
+                rounded />
+            </div>
+        </div>
+    </div>
+    <p-table
+      #dt
+      [value]="usuarios"
+      dataKey="id"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [tableStyle]="{ 'min-width': '75rem' }"
+    >  
+      <ng-template pTemplate="header">
+        <tr>
+          <th></th>
+          <th>Usuario</th>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+        <tr>
+          <td>{{ rowIndex+1 }}</td>
+          <td>{{ item.nombre_usuario }}</td>
+          <td>{{ item.nombre_completo }}</td>
+          <td>{{ item.rol === 'Invitado' ? 'Personal Operativo' : item.rol }}</td>          
+          <td class="text-center">
+            <button 
+                pButton 
+                icon="pi pi-key" 
+                class="p-button-rounded p-button-text p-button-info mr-2"
+                (click)="abrirDialogoContrasena(item)">
+            </button>
+            <button 
+                pButton 
+                icon="pi pi-trash" 
+                class="p-button-rounded p-button-text p-button-danger"
+                (click)="confirmarEliminarUsuario(item)"
+            ></button>
+           </td>
+        </tr>
+      </ng-template>
+        <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">No se encontraron usuarios.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+</div>

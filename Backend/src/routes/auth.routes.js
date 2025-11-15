@@ -1,4 +1,3 @@
-import { pool } from "../DB/db.js";
 import { Router } from "express";
 import {
     createUser,

@@ -35,10 +35,24 @@ export class LoginComponent {
   password: string = '';
   mostrarModalInvitado: boolean = false;
   nombreRealInvitado: string = '';
+  areaSeleccionada: 'Laboratorio' | 'Banco de Sangre' | null = null;
 
   constructor(private authService: AuthService, private router: Router, private messageService: MessageService) {}
 
+  seleccionarArea(area: 'Laboratorio' | 'Banco de Sangre') {
+    this.areaSeleccionada = area;
+  }
+
   login() {
+    if (!this.areaSeleccionada) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Área no seleccionada',
+        detail: 'Por favor, elige un área antes de continuar'
+      });
+      return;
+    }
+
     if (!this.user || !this.password) {
       this.messageService.add({
         severity: 'warn',
@@ -48,21 +62,32 @@ export class LoginComponent {
       return;
     }
 
-    this.authService.login({ username: this.user, password: this.password }).subscribe({
+    this.authService.login({ username: this.user, password: this.password, contexto: this.areaSeleccionada}).subscribe({
       next: (res) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Bienvenido',
           detail: `Hola, ${res.usuario.username}`
         });
+
+        // Guardando el token
+        this.authService.guardarToken(res.token);
+
+        //Guardando datos del usuario
+        localStorage.setItem('rol', res.usuario.rol);
         localStorage.setItem('usuario', JSON.stringify(res.usuario));
         localStorage.setItem('mostrarBienvenida', 'true');
+        localStorage.setItem('contexto', this.areaSeleccionada || "");
 
         if (res.usuario.rol === 'Invitado') {
           this.mostrarModalInvitado = true;
         } else {
-          setTimeout(() => this.router.navigate(['/']), 1500);
+          localStorage.setItem('nombreUsuarioLogueado', res.usuario.full_name);
+          setTimeout(() => this.router.navigate(['/dashboard']), 1500);
         }
+
+        const payload = JSON.parse(atob(res.token.split('.')[1]));
+        console.log('📦 Payload decodificado:', payload);
 
       },
       error: (err) => {
@@ -80,11 +105,13 @@ export class LoginComponent {
 
     console.log('Nombre real:', this.nombreRealInvitado);
     console.log('ID de sesión:', usuario.id_sesion);
-    this.authService.registrarNombreInvitado(this.nombreRealInvitado, usuario.id_sesion).subscribe({
+    const areaSelec = this.areaSeleccionada || "Desconocido";
+    this.authService.registrarNombreInvitado(this.nombreRealInvitado, usuario.id_sesion, areaSelec).subscribe({
       next: (res) => {
         localStorage.setItem('id_sesion', res.id_sesion);
+        localStorage.setItem('nombreUsuarioLogueado', this.nombreRealInvitado);
         this.mostrarModalInvitado = false;
-        this.router.navigate(['/']);
+        this.router.navigate(['/egresos']);
       },
       error: (err) => {
         this.messageService.add({

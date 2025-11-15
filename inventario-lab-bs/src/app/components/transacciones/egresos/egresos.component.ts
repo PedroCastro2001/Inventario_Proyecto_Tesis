@@ -52,6 +52,7 @@ export class EgresosComponent implements OnInit{
   loading: boolean = false;
   areasDisponibles: any[] = [];
   areaSeleccionada: any = null;
+  nombreUsuario: string = '';
 
   @ViewChild('filter') filter!: ElementRef;
 
@@ -75,7 +76,9 @@ export class EgresosComponent implements OnInit{
 
 
 
+
   ngOnInit(): void {
+    this.nombreUsuario = localStorage.getItem('nombreUsuarioLogueado') || 'Desconocido';
     this.cod_insumo = '';
     this.insumo = '';
     this.cod_area = '';
@@ -324,7 +327,10 @@ guardarTodosLosEgresos() {
 
   
 
-  this.egresosService.createMultipleEgresos(egresosFormateados).subscribe({
+  this.egresosService.createMultipleEgresos({
+    realizado_por: this.nombreUsuario,
+    egresos: egresosFormateados
+  }).subscribe({
     next: (res) => {
       console.log(res);
       this.messageService.add({

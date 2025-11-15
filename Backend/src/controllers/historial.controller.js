@@ -1,15 +1,17 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
 
 export const getHistorialMovimientos = async (req, res) => {
     console.log("Historial de movimientos");
   
     try {
+      const pool = getPool(req.user.contexto);
       const { fechaInicio, fechaFin, tipo } = req.query;
   
       let query = `
         SELECT 
           t.fecha,
           t.tipo_transaccion,
+          t.realizado_por,
           i.cod_insumo,
           i.nombre AS insumo,
           p.nombre AS presentacion,

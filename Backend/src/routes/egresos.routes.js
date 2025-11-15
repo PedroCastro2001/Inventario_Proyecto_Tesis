@@ -1,6 +1,5 @@
-import { pool } from "../DB/db.js";
 import { Router } from "express";
-
+import { verificarToken } from "../middlewares/requireLogin.js";
 import {
     createEgreso,
     deleteEgreso,
@@ -10,9 +9,9 @@ import {
     getLotesPorInsumoYPresentacion,
     getCantidadDisponiblePorLote
 } from "../controllers/egresos.controller.js";
-import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
+router.use(verificarToken);
 
 router.get("/egresos", getEgresos);
 router.get("/egresos/:cod_egreso"  ,getEgreso);

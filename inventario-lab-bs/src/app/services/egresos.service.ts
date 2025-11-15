@@ -16,10 +16,8 @@ export class EgresosService {
     return this.http.post(`${this.baseUrl}`, egreso);
   }
 
-  createMultipleEgresos(egresos: any[]): Observable<any> {
-    return this.http.post(`${this.baseUrl}/lote`, {
-      egresos
-    });
+  createMultipleEgresos(payload: { realizado_por: string; egresos: any[]}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/lote`, payload);
   }
 
   getLotesPorInsumoYPres(cod_insumo: number, cod_presentacion: number): Observable<any[]> {

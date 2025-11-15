@@ -79,7 +79,8 @@ export class IngresosComponent implements OnInit{
   dropdownValue: any = null;
   dropdownValues = [
     { name: 'Principal', code: 'NY' }
-];
+  ];
+  nombreUsuario: string = '';
 
   insumosDisponibles: any[] = [];
   filteredCodigos: any[] = [];
@@ -114,6 +115,7 @@ export class IngresosComponent implements OnInit{
   
 
   ngOnInit() {
+    this.nombreUsuario = localStorage.getItem('nombreUsuarioLogueado') || 'Desconocido';
     this.no_requisicion = '';
     this.cod_insumo = '';
     this.cod_presentacion = '';
@@ -330,7 +332,11 @@ export class IngresosComponent implements OnInit{
 
     console.log('Ingresos a guardar:', ingresosFormateados);
   
-    this.ingresosService.createMultipleIngresos(ingresosFormateados, this.no_requisicion).subscribe({
+    this.ingresosService.createMultipleIngresos({
+      realizado_por: this.nombreUsuario,
+      ingresos: ingresosFormateados, 
+      no_requisicion: this.no_requisicion
+    }).subscribe({
       next: (res) => {
         console.log(res);
         this.messageService.add({

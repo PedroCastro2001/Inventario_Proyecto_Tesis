@@ -1,7 +1,8 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
 
 export const getIngresos = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(`
             SELECT i.*, t.tipo_transaccion, t.fecha 
             FROM ingreso i
@@ -15,6 +16,7 @@ export const getIngresos = async (req, res) => {
 
 export const getIngreso = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_ingreso } = req.params;
         const [rows] = await pool.query(`
             SELECT i.*, t.tipo_transaccion, t.fecha 
@@ -35,6 +37,7 @@ export const getIngreso = async (req, res) => {
 
 export const deleteIngreso = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_ingreso } = req.params;
 
         const [ingreso] = await pool.query("SELECT cod_transaccion FROM ingreso WHERE cod_ingreso = ?", [cod_ingreso]);
@@ -57,6 +60,7 @@ export const createIngreso = async (req, res) => {
     const fechaActual = new Date();
 
     try {
+        const pool = getPool(req.user.contexto);
         const {
             no_requisicion,
             cod_insumo,
@@ -106,6 +110,7 @@ export const createIngreso = async (req, res) => {
 
 export const updateIngreso = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_ingreso } = req.params;
         const {
             no_requisicion,
@@ -160,7 +165,8 @@ export const createIngresosConTransaccion = async (req, res) => {
     const fechaActual = new Date();
 
     try {
-        const { no_requisicion, ingresos } = req.body;
+        const pool = getPool(req.user.contexto);
+        const { no_requisicion, ingresos, realizado_por } = req.body;
 
         if (!Array.isArray(ingresos) || ingresos.length === 0) {
             return res.status(400).json({ message: 'No hay ingresos para registrar' });
@@ -168,8 +174,8 @@ export const createIngresosConTransaccion = async (req, res) => {
 
         // 1. Crear transacción
         const [transaccionResult] = await pool.query(
-            "INSERT INTO transaccion (tipo_transaccion, fecha) VALUES (?, ?)",
-            ['Ingreso', fechaActual]
+            "INSERT INTO transaccion (tipo_transaccion, fecha, realizado_por) VALUES (?, ?, ?)",
+            ['Ingreso', fechaActual, realizado_por]
         );
         const cod_transaccion = transaccionResult.insertId;
 
@@ -217,6 +223,7 @@ export const createIngresosConTransaccion = async (req, res) => {
 
 export const getIngresosReqTemporal = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(`
             SELECT 
                 i.no_requisicion, 
@@ -235,6 +242,7 @@ export const getIngresosReqTemporal = async (req, res) => {
 
 export const updateNoRequisicion = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { tempNoRequisicion, newNoRequisicion } = req.body;
 
         if (!tempNoRequisicion || !newNoRequisicion) {

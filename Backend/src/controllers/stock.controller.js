@@ -1,9 +1,10 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
 
 export const getResumenStock = async (req, res) => {
   const { hastaFecha } = req.body;
 
   try {
+    const pool = getPool(req.user.contexto);
     const [rows] = await pool.query(
       `
       SELECT 
@@ -51,6 +52,7 @@ export const getResumenStock = async (req, res) => {
 
 export const getExistenciasYConsumos = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const { fecha_inicio, fecha_fin } = req.query;
 
     if (!fecha_inicio || !fecha_fin) {
@@ -109,6 +111,7 @@ export const getExistenciasYConsumos = async (req, res) => {
 
 export const getBalanceStock = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const { fecha_inicio, fecha_fin } = req.query;
 
     if (!fecha_inicio || !fecha_fin) {
@@ -149,7 +152,7 @@ export const getBalanceStock = async (req, res) => {
           SUM(s.cantidad) AS cantidad,
           NULL AS fecha_vencimiento,
           NULL AS lote,
-          'Saldo Inicial' AS tipo,
+          'S. Inicial' AS tipo,
           CAST(CONCAT(?, ' 00:00:00') AS DATETIME) AS fecha_transaccion
         FROM (
           /* ingresos previos (positivos) */

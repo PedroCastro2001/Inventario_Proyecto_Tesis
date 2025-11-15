@@ -1,9 +1,10 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
 
 export const getEgresos = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(`
-            SELECT e.*, t.tipo_transaccion, t.fecha 
+            SELECT e.*, t.tipo_transaccion, t.fecha, t.realizado_por
             FROM egreso e
             JOIN transaccion t ON e.cod_transaccion = t.cod_transaccion
         `);
@@ -15,9 +16,10 @@ export const getEgresos = async (req, res) => {
 
 export const getEgreso = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_egreso } = req.params;
         const [rows] = await pool.query(`
-            SELECT e.*, t.tipo_transaccion, t.fecha 
+            SELECT e.*, t.tipo_transaccion, t.fecha, t.realizado_por
             FROM egreso e
             JOIN transaccion t ON e.cod_transaccion = t.cod_transaccion
             WHERE e.cod_egreso = ?
@@ -35,6 +37,7 @@ export const getEgreso = async (req, res) => {
 
 export const deleteEgreso = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_egreso } = req.params;
 
         const [egreso] = await pool.query("SELECT cod_transaccion FROM egreso WHERE cod_egreso = ?", [cod_egreso]);
@@ -57,16 +60,18 @@ export const createEgreso = async (req, res) => {
     const fechaActual = new Date();
 
     try {
+        const pool = getPool(req.user.contexto);
         const {
             cod_area,
             cod_insumo,
-            cantidad
+            cantidad,
+            realizado_por
         } = req.body;
 
         // 1. Crear transacción
         const [transaccionResult] = await pool.query(
-            "INSERT INTO transaccion (tipo_transaccion, fecha) VALUES (?, ?)",
-            ['Egreso', fechaActual]
+            "INSERT INTO transaccion (tipo_transaccion, fecha, realizado_por) VALUES (?, ?, ?)",
+            ['Egreso', fechaActual, realizado_por]
         );
 
         const cod_transaccion = transaccionResult.insertId;
@@ -99,7 +104,8 @@ export const createEgresosConTransaccion = async (req, res) => {
     const fechaActual = new Date();
 
     try {
-        const { egresos } = req.body;
+        const pool = getPool(req.user.contexto);
+        const { egresos, realizado_por } = req.body;
 
         if (!Array.isArray(egresos) || egresos.length === 0) {
             return res.status(400).json({ message: 'No hay egresos para registrar' });
@@ -107,8 +113,8 @@ export const createEgresosConTransaccion = async (req, res) => {
 
         // 1. Crear transacción
         const [transaccionResult] = await pool.query(
-            "INSERT INTO transaccion (tipo_transaccion, fecha) VALUES (?, ?)",
-            ['Egreso', fechaActual]
+            "INSERT INTO transaccion (tipo_transaccion, fecha, realizado_por) VALUES (?, ?, ?)",
+            ['Egreso', fechaActual, realizado_por]
         );
         const cod_transaccion = transaccionResult.insertId;
 
@@ -153,6 +159,7 @@ export const getLotesPorInsumoYPresentacion = async (req, res) => {
     const { cod_insumo, cod_presentacion } = req.params;
 
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(
             `
             SELECT 
@@ -184,6 +191,7 @@ export const getCantidadDisponiblePorLote = async (req, res) => {
     const { cod_insumo, cod_presentacion, cod_lote } = req.params;
 
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(
             `
             SELECT 

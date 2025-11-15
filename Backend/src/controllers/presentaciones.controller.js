@@ -1,4 +1,4 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
 
 export const getPresentaciones = async (req, res) => {
     try {
@@ -12,6 +12,7 @@ export const getPresentaciones = async (req, res) => {
 
 export const getPresentacion = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_presentacion } = req.params;
         const [rows] = await pool.query("SELECT * FROM presentacion WHERE cod_presentacion = ?", [
             cod_presentacion,
@@ -30,6 +31,7 @@ export const getPresentacion = async (req, res) => {
 
 export const getPresentacionesInsumo = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_insumo } = req.params;
         const [rows] = await pool.query("SELECT * FROM presentacion WHERE cod_insumo = ?", [
             cod_insumo,
@@ -48,6 +50,7 @@ export const getPresentacionesInsumo = async (req, res) => {
 
 export const createPresentacion = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_presentacion, nombre, forma_despacho, cod_insumo } = req.body;
         const fecha_creacion = new Date(); 
         const [result] = await pool.query(
@@ -64,6 +67,7 @@ export const createPresentacion = async (req, res) => {
 
 export const updatePresentacion = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_presentacion } = req.params;
         const { nombre, forma_despacho, cod_insumo, fecha_creacion } = req.body;
 
@@ -89,6 +93,7 @@ export const updatePresentacion = async (req, res) => {
 
 export const deletePresentacion = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const { cod_presentacion } = req.params;
         const [result] = await pool.query("DELETE FROM presentacion WHERE cod_presentacion = ?", [
             cod_presentacion,

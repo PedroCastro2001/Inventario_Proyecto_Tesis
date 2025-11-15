@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import { verificarToken } from "../middlewares/requireLogin.js";
 import { getResumenStock, getExistenciasYConsumos, getBalanceStock } from '../controllers/stock.controller.js';
-import { requireLogin } from '../middlewares/requireLogin.js';
 
 const router = Router();
+router.use(verificarToken);
 
 router.post("/stock", getResumenStock);
 router.get("/existencias-consumos", getExistenciasYConsumos);

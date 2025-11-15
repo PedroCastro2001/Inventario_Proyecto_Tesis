@@ -1,7 +1,8 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
 
 export const getAreas = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const [rows] = await pool.query("SELECT * FROM area");
     res.json(rows);
   } catch (error) {
@@ -11,6 +12,7 @@ export const getAreas = async (req, res) => {
 
 export const getArea = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const { cod_area } = req.params;
     const [rows] = await pool.query("SELECT * FROM area WHERE cod_area = ?", [
       cod_area,
@@ -28,6 +30,7 @@ export const getArea = async (req, res) => {
 
 export const createArea = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const { nombre } = req.body;
     const [rows] = await pool.query(
       "INSERT INTO area (nombre) VALUES (?)",
@@ -41,6 +44,7 @@ export const createArea = async (req, res) => {
 
 export const updateArea = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const { cod_area } = req.params;
     const { nombre } = req.body;
 
@@ -64,6 +68,7 @@ export const updateArea = async (req, res) => {
 
 export const deleteArea = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const { cod_area } = req.params;
     const [rows] = await pool.query("DELETE FROM area WHERE cod_area = ?", [
       cod_area,

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { verificarToken } from "../middlewares/requireLogin.js";
 import {
   createPresentacion,
   deletePresentacion,
@@ -7,9 +8,9 @@ import {
   getPresentacionesInsumo,
   updatePresentacion,
 } from "../controllers/presentaciones.controller.js";
-import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
+router.use(verificarToken);
 
 router.get("/presentaciones", getPresentaciones);
 router.get("/presentaciones/:cod_presentacion", getPresentacion);

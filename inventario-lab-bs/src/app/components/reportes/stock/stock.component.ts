@@ -57,7 +57,7 @@ export class KardexPrincipalComponent implements OnInit {
 
   ngOnInit(): void {
     this.hastaFecha = new Date(); 
-    this.consultarResumenStock();
+    //this.consultarResumenStock();
   }
 
   consultarResumenStock() {
@@ -103,8 +103,165 @@ imprimir() {
     grupos[key].push(item);
   });
 
-  let ventana = window.open('', '_blank');
-  if (!ventana) return;
+  const contenido = `
+    <html>
+      <head>
+        <title>Imprimir resumen de stock</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+          }
+
+          .encabezado {
+            width: 100%;
+            margin-bottom: 20px;
+          }
+
+          .linea {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+          }
+
+          .linea-izquierda img {
+            width: 80px;
+          }
+
+          .linea-centro {
+            text-align: center;
+            flex: 1;
+          }
+
+          .linea-centro .hospital {
+            font-weight: bold;
+            font-size: 18px;
+          }
+
+          .linea-centro .anexo {
+            font-weight: bold;
+            font-size: 14px;
+          }
+
+          .linea-centro .control {
+            font-weight: normal;
+            font-size: 12px;
+            margin-top: 5px;
+          }
+
+          .linea-derecha {
+            text-align: right;
+            font-size: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+          }
+
+          .linea-derecha div {
+            display: flex;
+            gap: 5px;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 4px;
+            text-align: center;
+          }
+          th {
+            background-color: #f5f5f5;
+          }
+          h2 {
+            text-align: center;
+          }
+        </style>
+      </head>
+      <body>
+       <div class="encabezado">
+          <div class="linea">
+            <div class="linea-izquierda">
+              <img  src="https://pbs.twimg.com/profile_images/1085895369873997824/jbNZ9Fr2_400x400.png" alt="Mi Logo" alt="Logo" />
+            </div>
+            <div class="linea-centro">
+              <div class="hospital">HOSPITAL NACIONAL DE ESPECIALIDADES QUIRÚRGICAS DE VILLA NUEVA</div>
+              <div class="anexo">ANEXO 3</div>
+              <div class="control">SOLICITUD DE PEDIDO PARA STOCK - ${localStorage.getItem('contexto')?.toUpperCase()}</div>
+            </div>
+            <div class="linea-derecha">
+              <div><strong>CÓDIGO:</strong> _________</div>
+              <div><strong>VIGENCIA:</strong> _________</div>
+              <div><strong>EDICIÓN:</strong> _________</div>
+            </div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre (corto del catálogo)</th>
+              <th>Unidad de medida</th>
+              <th>Existencia</th>
+              <th>Cantidad a solicitar</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${Object.values(grupos).map(grupo => 
+              grupo.map((item, index) => `
+                <tr>
+                  ${index === 0 ? `<td rowspan="${grupo.length}">${item.cod_insumo}</td>` : ''}
+                  ${index === 0 ? `<td rowspan="${grupo.length}">${item.insumo}</td>` : ''}
+                  <td>${item.presentacion}</td>
+                  <td>${item.existencia_actual}</td>
+                  <td>${item.cantidad_a_solicitar}</td>
+                </tr>
+              `).join('')
+            ).join('')}
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
+
+  const doc = iframe.contentWindow?.document;
+  if (doc) {
+    doc.open();
+    doc.write(contenido);
+    doc.close();
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+  }
+
+  setTimeout(() => document.body.removeChild(iframe), 1000);
+
+}
+
+imprimirExistencias() {
+  if (!this.resumenStock || this.resumenStock.length === 0) {
+    alert('No hay datos para imprimir.');
+    return;
+  }
+
+  // Agrupar por código + nombre de insumo
+  const grupos: Record<string, typeof this.resumenStock> = {};
+  this.resumenStock.forEach(item => {
+    const key = `${item.cod_insumo}|${item.insumo}`;
+    if (!grupos[key]) grupos[key] = [];
+    grupos[key].push(item);
+  });
 
   const contenido = `
     <html>
@@ -150,6 +307,7 @@ imprimir() {
           .linea-centro .control {
             font-weight: normal;
             font-size: 12px;
+            margin-top: 5px;
           }
 
           .linea-derecha {
@@ -174,7 +332,7 @@ imprimir() {
           th, td {
             border: 1px solid #ccc;
             padding: 4px;
-            text-align: left;
+            text-align: center;
           }
           th {
             background-color: #f5f5f5;
@@ -192,13 +350,7 @@ imprimir() {
             </div>
             <div class="linea-centro">
               <div class="hospital">HOSPITAL NACIONAL DE ESPECIALIDADES QUIRÚRGICAS DE VILLA NUEVA</div>
-              <div class="anexo">ANEXO 3</div>
-              <div class="control">Solicitud de pedido para Stock</div>
-            </div>
-            <div class="linea-derecha">
-              <div><strong>CÓDIGO:</strong> _________</div>
-              <div><strong>VIGENCIA:</strong> _________</div>
-              <div><strong>EDICIÓN:</strong> _________</div>
+              <div class="control">EXISTENCIAS EN STOCK - ${localStorage.getItem('contexto')?.toUpperCase()}</div>
             </div>
           </div>
         </div>
@@ -210,7 +362,6 @@ imprimir() {
               <th>Nombre (corto del catálogo)</th>
               <th>Unidad de medida</th>
               <th>Existencia</th>
-              <th>Cantidad a solicitar</th>
             </tr>
           </thead>
           <tbody>
@@ -221,7 +372,6 @@ imprimir() {
                   ${index === 0 ? `<td rowspan="${grupo.length}">${item.insumo}</td>` : ''}
                   <td>${item.presentacion}</td>
                   <td>${item.existencia_actual}</td>
-                  <td>${item.cantidad_a_solicitar}</td>
                 </tr>
               `).join('')
             ).join('')}
@@ -231,9 +381,24 @@ imprimir() {
     </html>
   `;
 
-  ventana.document.write(contenido);
-  ventana.document.close();
-  ventana.print();
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
+
+  const doc = iframe.contentWindow?.document;
+  if (doc) {
+    doc.open();
+    doc.write(contenido);
+    doc.close();
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+  }
+
+  setTimeout(() => document.body.removeChild(iframe), 1000);
+
 }
 
 }

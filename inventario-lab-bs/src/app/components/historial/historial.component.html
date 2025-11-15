@@ -72,6 +72,7 @@
           <th></th>
           <th>Fecha</th>
           <th>Tipo</th>
+          <th>Realizado Por</th>
           <th>Cod. Insumo</th>
           <th>Insumo</th>
           <th>Presentación</th>
@@ -93,6 +94,7 @@
               [severity]="item.tipo_transaccion === 'Ingreso' ? 'success' : 'warn'">
             </p-tag>
           </td>
+          <td>{{ item.realizado_por }}</td>
           <td>{{ item.cod_insumo }}</td>
           <td>{{ item.insumo }}</td>
           <td>{{ item.presentacion }}</td>
@@ -106,7 +108,7 @@
       </ng-template>
         <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="3">No se encontraron movimientos.</td>
+          <td colspan="13">No se encontraron movimientos.</td>
         </tr>
       </ng-template>
     </p-table>

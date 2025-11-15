@@ -16,11 +16,8 @@ export class IngresosService {
     return this.http.post(`${this.baseUrl}`, ingreso);
   }
 
-  createMultipleIngresos(ingresos: any[], no_requisicion: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/lote`, {
-      ingresos,
-      no_requisicion
-    });
+  createMultipleIngresos(payload: { realizado_por: string; ingresos: any[], no_requisicion: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/lote`, payload);
   }
 
   getIngresosReqTemporal(): Observable<any> {

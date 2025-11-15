@@ -28,7 +28,7 @@ interface MenuChangeEvent {
 export class LayoutService {
     _config: layoutConfig = {
         preset: 'Aura',
-        primary: 'emerald',
+        primary: 'cyan',
         surface: null,
         darkTheme: false,
         menuMode: 'static'
@@ -79,6 +79,11 @@ export class LayoutService {
     private initialized = false;
 
     constructor() {
+        const savedDarkMode = localStorage.getItem('darkTheme');
+        if (savedDarkMode !== null) {
+            this.layoutConfig.update(cfg => ({ ...cfg, darkTheme: savedDarkMode === 'true' }));
+        }
+
         effect(() => {
             const config = this.layoutConfig();
             if (config) {
@@ -126,6 +131,7 @@ export class LayoutService {
         } else {
             document.documentElement.classList.remove('app-dark');
         }
+        localStorage.setItem('darkTheme', String(_config.darkTheme));
     }
 
     private onTransitionEnd() {
@@ -174,5 +180,13 @@ export class LayoutService {
 
     reset() {
         this.resetSource.next(true);
+    }
+
+    resetDarkMode(): void {
+    document.documentElement.classList.remove('app-dark');
+    
+    this.layoutConfig.update(cfg => ({ ...cfg, darkTheme: false }));
+    
+    localStorage.removeItem('darkTheme');
     }
 }

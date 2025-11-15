@@ -1,7 +1,8 @@
-import { pool } from "../DB/db.js";
+import { getPool } from "../DB/db.js";
 
 export const getInsumosCercanosCantidadMinima = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const [rows] = await pool.query(
       `
       SELECT 
@@ -39,6 +40,7 @@ export const getLotesProximosAVencer = async (req, res) => {
     const dias = req.query.dias || 30; // Por defecto próximos 30 días
 
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(
             `
             SELECT 
@@ -72,6 +74,7 @@ export const getLotesProximosAVencer = async (req, res) => {
 
 export const getInsumosAgotados = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const [rows] = await pool.query(
       `
       SELECT 
@@ -109,6 +112,7 @@ export const getInsumosAgotados = async (req, res) => {
 
 export const getCantidadInsumosAgotados = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const [rows] = await pool.query(
       `
       SELECT COUNT(*) AS cantidad_agotados
@@ -140,6 +144,7 @@ export const getCantidadInsumosAgotados = async (req, res) => {
 
 export const getCantidadReqTemporales = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(`
             SELECT COUNT(DISTINCT i.no_requisicion) AS cant_req_temporales
             FROM ingreso i
@@ -158,6 +163,7 @@ export const getCantidadReqTemporales = async (req, res) => {
 
 export const getCantidadLotesVencidos = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const [rows] = await pool.query(
       `
       SELECT COUNT(*) AS cantidad_lotes_vencidos
@@ -178,6 +184,7 @@ export const getCantidadLotesVencidos = async (req, res) => {
 
 export const getLotesVencidos = async (req, res) => {
     try {
+        const pool = getPool(req.user.contexto);
         const [rows] = await pool.query(
             `
             SELECT 
@@ -210,6 +217,7 @@ export const getLotesVencidos = async (req, res) => {
 
 export const getTransaccionesHoy = async (req, res) => {
   try {
+    const pool = getPool(req.user.contexto);
     const [rows] = await pool.query(
       `
       SELECT COUNT(*) AS total_transacciones_hoy

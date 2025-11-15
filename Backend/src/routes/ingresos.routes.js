@@ -1,5 +1,5 @@
-import { pool } from "../DB/db.js";
 import { Router } from "express";
+import { verificarToken } from "../middlewares/requireLogin.js";
 
 import {
     createIngreso,
@@ -10,9 +10,9 @@ import {
     getIngresosReqTemporal,
     updateNoRequisicion,
 } from "../controllers/ingresos.controller.js";
-import { requireLogin } from "../middlewares/requireLogin.js";
 
 const router = Router();
+router.use(verificarToken);
 
 router.get("/ingresos", getIngresos);
 router.get("/ingresos/req_temporales", getIngresosReqTemporal)

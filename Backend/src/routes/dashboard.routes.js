@@ -1,5 +1,5 @@
 import { Router } from "express";
-
+import { verificarToken } from "../middlewares/requireLogin.js";
 import {
     getInsumosCercanosCantidadMinima,
     getLotesProximosAVencer,
@@ -12,6 +12,7 @@ import {
 } from "../controllers/dashboard.controller.js";
 
 const router = Router();
+router.use(verificarToken);
 
 router.get("/dashboard/insumos-por-agotarse", getInsumosCercanosCantidadMinima);
 router.get("/dashboard/lotes-proximos-a-vencer", getLotesProximosAVencer);

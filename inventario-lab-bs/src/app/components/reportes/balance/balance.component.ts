@@ -70,7 +70,7 @@ export class BalanceComponent implements OnInit {
   ngOnInit(): void {
     this.desdeFecha = new Date();
     this.hastaFecha = new Date();
-    this.consultarBalance();
+    //this.consultarBalance();
   }
 
   consultarBalance() {  
@@ -127,6 +127,16 @@ export class BalanceComponent implements OnInit {
     return;
   }
 
+  // Generar texto del periodo
+  let periodoTexto = '';
+  if (this.desdeFecha && this.hastaFecha) {
+    periodoTexto = `Periodo: ${new Date(this.desdeFecha).toLocaleDateString()} al ${new Date(this.hastaFecha).toLocaleDateString()}`;
+  } else if (this.desdeFecha) {
+    periodoTexto = `Desde: ${new Date(this.desdeFecha).toLocaleDateString()}`;
+  } else if (this.hastaFecha) {
+    periodoTexto = `Hasta: ${new Date(this.hastaFecha).toLocaleDateString()}`;
+  }
+
   // Agrupar por código + insumo, y luego por presentación
   const grupos: Record<string, Record<string, BalanceItem[]>> = {};
   this.balanceData.forEach((item: BalanceItem) => {
@@ -137,187 +147,208 @@ export class BalanceComponent implements OnInit {
     grupos[key][presKey].push(item);
   });
 
-  let ventana = window.open('', '_blank');
-  if (!ventana) return;
+    const contenido = `
+      <html>
+        <head>
+          <title>Imprimir Balance</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+            }
 
-  const contenido = `
-    <html>
-      <head>
-        <title>Imprimir Balance</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-          }
+            .encabezado {
+              width: 100%;
+              margin-bottom: 20px;
+            }
 
-          .encabezado {
-            width: 100%;
-            margin-bottom: 20px;
-          }
+            .linea {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 4px;
+            }
 
-          .linea {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-          }
+            .linea-izquierda img {
+              width: 80px;
+            }
 
-          .linea-izquierda img {
-            width: 80px;
-          }
+            .linea-centro {
+              text-align: center;
+              flex: 1;
+            }
 
-          .linea-centro {
-            text-align: center;
-            flex: 1;
-          }
+            .linea-centro .hospital {
+              font-weight: bold;
+              font-size: 18px;
+            }
 
-          .linea-centro .hospital {
-            font-weight: bold;
-            font-size: 18px;
-          }
+            .linea-centro .anexo {
+              font-weight: bold;
+              font-size: 14px;
+            }
 
-          .linea-centro .anexo {
-            font-weight: bold;
-            font-size: 14px;
-          }
+            .linea-centro .control {
+              font-weight: normal;
+              font-size: 12px;
+              margin-top: 5px;
+            }
 
-          .linea-centro .control {
-            font-weight: normal;
-            font-size: 12px;
-          }
+            .periodo {
+              text-align: center;
+              font-size: 12px;
+              margin-bottom: 15px;
+              margin-top: 15px;
+            }
 
-          .linea-derecha {
-            text-align: right;
-            font-size: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-          }
+            .linea-derecha {
+              text-align: right;
+              font-size: 10px;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              gap: 2px;
+            }
 
-          .linea-derecha div {
-            display: flex;
-            gap: 5px;
-          }
+            .linea-derecha div {
+              display: flex;
+              gap: 5px;
+            }
 
-          h1 {
-            text-align: center;
-            color: #0369a1;
-            font-size: 24px;
-            margin-bottom: 20px;
-          }
+            h1 {
+              text-align: center;
+              color: #0369a1;
+              font-size: 24px;
+              margin-bottom: 20px;
+            }
 
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 10px; 
-          }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              font-size: 10px; 
+            }
 
-          th, td {
-            border: 1px solid #ccc;
-            padding: 4px;
-            text-align: left;
-          }
+            th, td {
+              border: 1px solid #ccc;
+              padding: 4px;
+              text-align: center;
+            }
 
-          th {
-            background-color: #f5f5f5;
-          }
+            th {
+              background-color: #f5f5f5;
+            }
 
-          .tag-ingreso {
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-          }
+            .tag-ingreso {
+              background-color: #d1fae5;
+              color: #065f46;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 11px;
+            }
 
-          .tag-egreso {
-            background-color: #fef3c7;
-            color: #78350f;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-          }
+            .tag-egreso {
+              background-color: #fef3c7;
+              color: #78350f;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 11px;
+            }
 
-          .tag-saldo {
-            background-color: #dbeafe;
-            color: #1e40af;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="encabezado">
-          <div class="linea">
-            <div class="linea-izquierda">
-              <img  src="https://pbs.twimg.com/profile_images/1085895369873997824/jbNZ9Fr2_400x400.png" alt="Mi Logo" alt="Logo" />
-            </div>
-            <div class="linea-centro">
-              <div class="hospital">HOSPITAL NACIONAL DE ESPECIALIDADES QUIRÚRGICAS DE VILLA NUEVA</div>
-              <div class="anexo">ANEXO 2</div>
-              <div class="control">CONTROL INTERNO DE INSUMOS</div>
-            </div>
-            <div class="linea-derecha">
-              <div><strong>CÓDIGO:</strong> _________</div>
-              <div><strong>VIGENCIA:</strong> _________</div>
-              <div><strong>EDICIÓN:</strong> _________</div>
+            .tag-saldo {
+              background-color: #dbeafe;
+              color: #155a76ff;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 9px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="encabezado">
+            <div class="linea">
+              <div class="linea-izquierda">
+                <img  src="https://pbs.twimg.com/profile_images/1085895369873997824/jbNZ9Fr2_400x400.png" alt="Mi Logo" alt="Logo" />
+              </div>
+              <div class="linea-centro">
+                <div class="hospital">HOSPITAL NACIONAL DE ESPECIALIDADES QUIRÚRGICAS DE VILLA NUEVA</div>
+                <div class="anexo">ANEXO 2</div>
+                <div class="control">CONTROL INTERNO DE INSUMOS - ${localStorage.getItem('contexto')?.toUpperCase()}</div>
+                ${periodoTexto ? `<div class="periodo">${periodoTexto}</div>` : ''}
+              </div>
+              <div class="linea-derecha">
+                <div><strong>CÓDIGO:</strong> _________</div>
+                <div><strong>VIGENCIA:</strong> _________</div>
+                <div><strong>EDICIÓN:</strong> _________</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Código Insumo</th>
-              <th>Insumo</th>
-              <th>Presentación</th>
-              <th>Tipo</th>
-              <th>No requisición</th>
-              <th>Fecha transacción</th>
-              <th>Cantidad</th>
-              <th>Fecha vencimiento</th>
-              <th>Lote</th>
-              <th>Saldo</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${Object.entries(grupos)
-              .map(([key, presGrupos]) => {
-                const [cod_insumo, insumo] = key.split('|');
-                return Object.entries(presGrupos)
-                  .map(([presentacion, items]) => {
-                    return items.map((item, index) => `
-                      <tr>
-                        ${index === 0 && presentacion === Object.keys(presGrupos)[0] ? `<td rowspan="${Object.values(presGrupos).reduce((a,b)=>a+b.length,0)}">${cod_insumo}</td>` : ''}
-                        ${index === 0 && presentacion === Object.keys(presGrupos)[0] ? `<td rowspan="${Object.values(presGrupos).reduce((a,b)=>a+b.length,0)}">${insumo}</td>` : ''}
-                        ${index === 0 ? `<td rowspan="${items.length}">${presentacion}</td>` : ''}
-                        <td>
-                          <span class="${
-                            item.tipo === 'Ingreso' ? 'tag-ingreso' :
-                            item.tipo === 'Egreso' ? 'tag-egreso' :
-                            item.tipo === 'Saldo inicial' ? 'tag-saldo' : ''
-                          }">${item.tipo}</span>
-                        </td>
-                        <td>${item.no_requisicion || '-'}</td>
-                        <td>${item.fecha_transaccion ? new Date(item.fecha_transaccion).toLocaleString() : '-'}</td>
-                        <td>${item.cantidad ?? '-'}</td>
-                        <td>${item.fecha_vencimiento ? new Date(item.fecha_vencimiento).toLocaleDateString() : '-'}</td>
-                        <td>${item.lote || '-'}</td>
-                        <td>${item.saldo ?? '-'}</td>
-                      </tr>
-                    `).join('');
-                  }).join('');
-              }).join('')}
-          </tbody>
-        </table>
-      </body>
-    </html>
-  `;
+          <table>
+            <thead>
+              <tr>
+                <th>Código Insumo</th>
+                <th>Insumo</th>
+                <th>Presentación</th>
+                <th>Tipo</th>
+                <th>No requisición</th>
+                <th>Fecha transacción</th>
+                <th>Cantidad</th>
+                <th>Fecha vencimiento</th>
+                <th>Lote</th>
+                <th>Saldo</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${Object.entries(grupos)
+                .map(([key, presGrupos]) => {
+                  const [cod_insumo, insumo] = key.split('|');
+                  return Object.entries(presGrupos)
+                    .map(([presentacion, items]) => {
+                      return items.map((item, index) => `
+                        <tr>
+                          ${index === 0 && presentacion === Object.keys(presGrupos)[0] ? `<td rowspan="${Object.values(presGrupos).reduce((a,b)=>a+b.length,0)}">${cod_insumo}</td>` : ''}
+                          ${index === 0 && presentacion === Object.keys(presGrupos)[0] ? `<td rowspan="${Object.values(presGrupos).reduce((a,b)=>a+b.length,0)}">${insumo}</td>` : ''}
+                          ${index === 0 ? `<td rowspan="${items.length}">${presentacion}</td>` : ''}
+                          <td>
+                            <span class="${
+                              item.tipo === 'Ingreso' ? 'tag-ingreso' :
+                              item.tipo === 'Egreso' ? 'tag-egreso' :
+                              item.tipo === 'S. Inicial' ? 'tag-saldo' : ''
+                            }">${item.tipo}</span>
+                          </td>
+                          <td>${item.no_requisicion || '-'}</td>
+                          <td>${item.fecha_transaccion ? new Date(item.fecha_transaccion).toLocaleDateString() : '-'}</td>
+                          <td>${item.cantidad ?? '-'}</td>
+                          <td>${item.fecha_vencimiento ? new Date(item.fecha_vencimiento).toLocaleDateString() : '-'}</td>
+                          <td>${item.lote || '-'}</td>
+                          <td>${item.saldo ?? '-'}</td>
+                        </tr>
+                      `).join('');
+                    }).join('');
+                }).join('')}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
 
-  ventana.document.write(contenido);
-  ventana.document.close();
-  ventana.print();
-}
+
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (doc) {
+      doc.open();
+      doc.write(contenido);
+      doc.close();
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+    }
+
+    setTimeout(() => document.body.removeChild(iframe), 1000);
+  }
 }

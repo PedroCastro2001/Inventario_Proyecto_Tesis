@@ -57,6 +57,8 @@ export class InsumosComponent implements OnInit{
   expandedRows: { [key: string]: boolean } = {}; 
   addPresentationModalVisible: boolean = false;
   selectedInsumo: any = null;
+  selectedFile: File | null = null;
+  showUploadDialog: boolean = false;
 
   constructor(
     private insumosService: InsumoService, 
@@ -216,5 +218,57 @@ export class InsumosComponent implements OnInit{
       console.error('Error al guardar la presentación:', error);
     }); 
   }
+
+  openMassiveUpload() {
+    this.showUploadDialog = true;
+  }
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
+  subirArchivo() {
+    if (!this.selectedFile) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Archivo no seleccionado',
+        detail: 'Por favor selecciona un archivo CSV.'
+      });
+      return;
+    }
+
+    this.insumosService.uploadCSV(this.selectedFile).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Carga completada',
+          detail: 'Los insumos fueron importados correctamente.'
+        });
+        this.showUploadDialog = false;
+        this.selectedFile = null;
+        this.ngOnInit();
+      },
+      error: (err) => {
+        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error en la carga',
+          detail: 'Hubo un problema al importar los insumos.'
+        });
+      }
+    });
+  }
+
+  onUpload() {
+    if (this.selectedFile) {
+      this.insumosService.uploadCSV(this.selectedFile).subscribe({
+        next: (res) => console.log('Archivo cargado correctamente', res),
+        error: (err) => console.error('Error al cargar', err)
+      });
+    }
+  }
+
+
+
 
 }
