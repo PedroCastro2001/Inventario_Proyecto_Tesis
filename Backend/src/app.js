@@ -20,21 +20,10 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:4200",
+  origin: process.env.CORS_ORIGIN,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: false,
 }));
-/*app.use(session({
-  secret: 'my_secret',  
-  resave: false,         
-  saveUninitialized: true, 
-  cookie: {
-    secure: true, 
-    httpOnly: true, 
-    sameSite: 'none',
-    maxAge: 24 * 60 * 60 * 1000,
-  }
-}));*/
 
 // Routes
 app.use("/", indexRoutes);

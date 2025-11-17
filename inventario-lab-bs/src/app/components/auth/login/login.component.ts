@@ -36,6 +36,7 @@ export class LoginComponent {
   mostrarModalInvitado: boolean = false;
   nombreRealInvitado: string = '';
   areaSeleccionada: 'Laboratorio' | 'Banco de Sangre' | null = null;
+  mostrarDialogOlvideContra: boolean = false;
 
   constructor(private authService: AuthService, private router: Router, private messageService: MessageService) {}
 
@@ -121,6 +122,14 @@ export class LoginComponent {
         });
       }
     });
+  }
+
+  mostrarModalOlvideContrasena() {
+    this.mostrarDialogOlvideContra = true;
+  }
+
+  cerrarModalOlvideContrasena(){
+    this.mostrarDialogOlvideContra = false;
   }
 
 

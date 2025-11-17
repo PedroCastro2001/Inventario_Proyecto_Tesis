@@ -1,4 +1,11 @@
 <p-toast></p-toast>
+<p-dialog header="Recuperar Contraseña" [modal]="true" [(visible)]="mostrarDialogOlvideContra" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-8">El reinicio de contraseñas sólo puede ser realizado por otro usuario autorizado con permisos de administrador.
+Este procedimiento no se realiza de forma automática por el sistema.</span>
+    <div class="flex justify-end gap-2">
+        <p-button label="Entendido" (click)="cerrarModalOlvideContrasena()" />
+    </div>
+</p-dialog>
 <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
     <div class="flex flex-col items-center justify-center">
         <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
@@ -35,6 +42,11 @@
                     <p-password id="password" [(ngModel)]="password" placeholder="Ingresa tu contraseña" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
 
                     <p-button label="Ingresar" styleClass="w-full" (onClick)="login()"></p-button>
+                    <div class="text-center mt-6">
+                        <a class="text-primary cursor-pointer hover:underline" (click)="mostrarModalOlvideContrasena()">
+                            Olvidé mi contraseña
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
