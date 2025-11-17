@@ -17,11 +17,10 @@ import session from "express-session";
 const app = express();
 
 // Middlewares
-
-app.use(cors());
-/*app.use(morgan("dev"));
+app.use(morgan("dev"));
 app.use(express.json());
-app.use(cors({
+app.use(cors())
+/*app.use(cors({
   origin: process.env.CORS_ORIGIN,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: false,
