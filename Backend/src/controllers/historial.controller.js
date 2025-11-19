@@ -56,8 +56,11 @@ export const getHistorialMovimientos = async (req, res) => {
       const valores = [];
   
       if (fechaInicio && fechaFin) {
+        const fechaInicioCompleta = `${fechaInicio} 00:00:00`;
+        const fechaFinCompleta = `${fechaFin} 23:59:59`;  
+
         condiciones.push("t.fecha BETWEEN ? AND ?");
-        valores.push(fechaInicio, fechaFin);
+        valores.push(fechaInicioCompleta, fechaFinCompleta);
       }
   
       if (tipo && tipo !== "Todos") {
