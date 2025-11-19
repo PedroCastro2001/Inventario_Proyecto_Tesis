@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+
+  backend:
+    image: username/backend-inventario-lab-bs:latest
+    container_name: backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  frontend:
+    image: username/frontend-inventario-lab-bs:latest
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

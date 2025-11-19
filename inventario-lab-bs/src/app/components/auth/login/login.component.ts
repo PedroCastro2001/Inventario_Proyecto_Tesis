@@ -88,7 +88,6 @@ export class LoginComponent {
         }
 
         const payload = JSON.parse(atob(res.token.split('.')[1]));
-        console.log('📦 Payload decodificado:', payload);
 
       },
       error: (err) => {
@@ -103,9 +102,6 @@ export class LoginComponent {
 
   confirmarNombreInvitado() {
     const usuario = JSON.parse(localStorage.getItem('usuario')!);
-
-    console.log('Nombre real:', this.nombreRealInvitado);
-    console.log('ID de sesión:', usuario.id_sesion);
     const areaSelec = this.areaSeleccionada || "Desconocido";
     this.authService.registrarNombreInvitado(this.nombreRealInvitado, usuario.id_sesion, areaSelec).subscribe({
       next: (res) => {

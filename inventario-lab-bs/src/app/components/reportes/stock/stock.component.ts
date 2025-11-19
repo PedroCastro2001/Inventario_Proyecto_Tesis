@@ -70,7 +70,6 @@ export class KardexPrincipalComponent implements OnInit {
     this.kardexService.getResumenStock(body).subscribe({
       next: (data) => {
         this.resumenStock = data;
-        console.log('Resumen de stock:', this.resumenStock);
       },
       error: (err) => {
         console.error('Error al consultar resumen de stock:', err);
@@ -136,7 +135,7 @@ imprimir() {
 
           .linea-centro .hospital {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 14px;
           }
 
           .linea-centro .anexo {
@@ -194,9 +193,6 @@ imprimir() {
               <div class="control">SOLICITUD DE PEDIDO PARA STOCK - ${localStorage.getItem('contexto')?.toUpperCase()}</div>
             </div>
             <div class="linea-derecha">
-              <div><strong>CÓDIGO:</strong> _________</div>
-              <div><strong>VIGENCIA:</strong> _________</div>
-              <div><strong>EDICIÓN:</strong> _________</div>
             </div>
           </div>
         </div>
@@ -296,7 +292,7 @@ imprimirExistencias() {
 
           .linea-centro .hospital {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 14px;
           }
 
           .linea-centro .anexo {

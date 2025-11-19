@@ -92,7 +92,6 @@ export const getInsumo = async (req, res) => {
   };
 
 export const cargaMasivaInsumos = async (req, res) => {
-  console.log("hola")
   try {
     const pool = getPool(req.user.contexto);
     if (!req.file) {

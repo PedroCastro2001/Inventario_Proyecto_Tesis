@@ -172,7 +172,6 @@ export class IngresosComponent implements OnInit{
 
   setInsumoName(ingreso: any, selected: any) {
     
-        console.log(selected.value.nombre);
         ingreso.insumo = selected.value.nombre;
         ingreso.cod_insumo = selected.value.cod_insumo;
 
@@ -338,7 +337,6 @@ export class IngresosComponent implements OnInit{
       no_requisicion: this.no_requisicion
     }).subscribe({
       next: (res) => {
-        console.log(res);
         this.messageService.add({
           severity: 'success',
           summary: 'Guardado',

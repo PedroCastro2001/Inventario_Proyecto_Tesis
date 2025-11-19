@@ -97,11 +97,6 @@ export const login = async (req, res) => {
 }
 
 export const profile = (req, res) => {
-    /*if (req.session.user) {
-        return res.status(200).json(req.session.user);
-    } else {
-        return res.status(401).json({ error: "No autenticado" });
-    }*/
         return res.status(401).json({ error: "No autenticado" });
 
 };
@@ -121,10 +116,6 @@ export const registrarNombreInvitado = async (req, res) => {
     const { nombre_real, id_sesion, contexto } = req.body;
 
     console.log('Datos recibidos:', req.body); 
-
-    /*if (!req.session.user || req.session.user.rol !== 'Invitado') {
-        return res.status(403).json({ error: 'Acceso denegado' });
-    }*/
 
     try {
         if (!nombre_real || !id_sesion) {

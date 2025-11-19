@@ -84,7 +84,6 @@ export class BalanceComponent implements OnInit {
     this.kardexService.getBalanceStock(fechaFormateadaInicio, fechaFormateadaFin).subscribe({
       next: (data) => {
         this.balanceData = data;
-        console.log('Balance:', this.balanceData);
       },
       error: (err) => {
         console.error('Error al consultar el balance:', err);
@@ -180,7 +179,7 @@ export class BalanceComponent implements OnInit {
 
             .linea-centro .hospital {
               font-weight: bold;
-              font-size: 18px;
+              font-size: 14px;
             }
 
             .linea-centro .anexo {
@@ -276,9 +275,6 @@ export class BalanceComponent implements OnInit {
                 ${periodoTexto ? `<div class="periodo">${periodoTexto}</div>` : ''}
               </div>
               <div class="linea-derecha">
-                <div><strong>CÓDIGO:</strong> _________</div>
-                <div><strong>VIGENCIA:</strong> _________</div>
-                <div><strong>EDICIÓN:</strong> _________</div>
               </div>
             </div>
           </div>

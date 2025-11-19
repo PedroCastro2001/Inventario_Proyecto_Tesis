@@ -126,8 +126,6 @@ cancelarEdicion(reqTemporal: any) {
 }
 
 actualizarNoRequisicion(newNoRequisicion: string) {
-  console.log(this.tempNoRequisicion);
-  console.log(this.no_requisicion);
   this.ingresosService.updateNoRequisicion(this.tempNoRequisicion, newNoRequisicion).subscribe({
     next: (response) => {
       console.log('Número de requisición actualizado:', response);

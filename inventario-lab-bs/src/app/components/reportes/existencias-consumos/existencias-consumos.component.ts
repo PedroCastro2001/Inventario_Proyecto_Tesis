@@ -75,7 +75,6 @@ export class ExistenciasConsumosComponent implements OnInit{
     this.existenciasConsumosService.obtenerReporteExistencias(fechaFormateadaInicio, fechaFormateada).subscribe({
       next: (data) => {
         this.existenciasConsumos = data;
-        console.log('Existencias y consumos:', this.existenciasConsumos);
         this.cargando = false;
       },
       error: (err) => {

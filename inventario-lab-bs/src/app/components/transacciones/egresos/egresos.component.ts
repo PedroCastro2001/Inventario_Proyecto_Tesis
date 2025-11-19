@@ -143,7 +143,6 @@ export class EgresosComponent implements OnInit{
 
   setInsumoName(egreso: any, selected: any) {
     
-    console.log(selected.value.nombre);
     egreso.insumo = selected.value.nombre;
     egreso.cod_insumo = selected.value.cod_insumo;
 
@@ -227,9 +226,6 @@ onLoteSelect(egreso: any, event: any) {
     const dias = Math.ceil((fecha.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
     return dias < 90;
   });
-
-  console.log("existeRojo:", existeRojo);
-  console.log("selectedDias:", selectedDias);
 
   // Si el lote seleccionado NO es rojo (<3 meses) pero sí hay rojos disponibles
   if (existeRojo && selectedDias >= 90) {
@@ -332,7 +328,6 @@ guardarTodosLosEgresos() {
     egresos: egresosFormateados
   }).subscribe({
     next: (res) => {
-      console.log(res);
       this.messageService.add({
         severity: 'success',
         summary: 'Guardado',
