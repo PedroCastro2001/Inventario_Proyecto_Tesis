@@ -23,7 +23,7 @@ FROM nginx:alpine
 COPY --from=build /app/dist/inventario-lab-bs/browser /usr/share/nginx/html
 
 # Copiamos configuración personalizada de Nginx si la tenemos
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exponemos el puerto 80 para servir la app
 EXPOSE 80
