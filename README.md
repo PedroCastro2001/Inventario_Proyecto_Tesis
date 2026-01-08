@@ -1,4 +1,4 @@
-# Inventario_Proyecto_Tesis
+# Gestion_Insumos_Proyecto_Tesis
 
 Repositorio correspondiente al proyecto de tesis sobre el desarrollo de un sistema web de gestión de insumos para el Laboratorio Clínico y el Banco de Sangre del Hospital Nacional de Especialidades Quirúrgicas de Villa Nueva.
 
